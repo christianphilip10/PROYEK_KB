@@ -5,9 +5,18 @@ import game
 
 pygame.init()
 pygame.mixer.init()
-
-SHOOT_SOUND = pygame.mixer.Sound('bullet.wav')
+# Shootsound
+SHOOT_SOUND = pygame.mixer.Sound('Assets/bullet.wav')
 SHOOT_SOUND.set_volume(1)
+
+# destroy sound
+DESTROY_SOUND = pygame.mixer.Sound('Assets/destroy.wav')
+DESTROY_SOUND.set_volume(0.3)
+
+
+# bakcgorund music
+BACKGROUND_SOUND = pygame.mixer.Sound('Assets/bullet.wav')
+BACKGROUND_SOUND.set_volume(0.5)
 
 class Invader(sge.dsp.Object):
     gene_props = {
@@ -130,6 +139,7 @@ class Player(sge.dsp.Object):
         # Load the shoot sound
         self.shoot_sound = SHOOT_SOUND
 
+
     def event_step(self, time_passed, delta_mult):
         # Movement
         key_motion = (sge.keyboard.get_pressed(self.rkey) -
@@ -179,6 +189,8 @@ class PlayerBullet(sge.dsp.Object):
                                    fill=game.CITIUS_COLOR)
         super(PlayerBullet, self).__init__(x, player.y, sprite=ball_sprite)
 
+        self.destroy_sound = DESTROY_SOUND
+
     def event_create(self):
         self.yvelocity = -game.BULLET_START_SPEED
 
@@ -191,4 +203,5 @@ class PlayerBullet(sge.dsp.Object):
             if killed:
                 # We only kill the first colliding Invader
                 killed[0].destroy()
+                DESTROY_SOUND.play()
                 self.destroy()

@@ -30,3 +30,4 @@ if __name__ == '__main__':
 
     # Here we go!
     sge.game.start()
+
