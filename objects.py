@@ -13,6 +13,122 @@ UPGRADE_SOUND = pygame.mixer.Sound('upgrade.wav')
 UPGRADE_SOUND.set_volume(1)
 
 
+import random
+import sge
+
+import random
+import sge
+
+# class Invader(sge.dsp.Object):
+#     gene_props = {
+#         'scale': {
+#             'min': 1,
+#             'max': 7,
+#             'gen': lambda: random.gammavariate(4, 0.5) + 1
+#         },
+#
+#         'alpha': {
+#             'min': 5,
+#             'max': 255,
+#             'gen': lambda: random.randint(20, 255)
+#         },
+#
+#         'xvelocity': {
+#             'min': 0.01,
+#             'max': 5,
+#             'gen': lambda: random.gammavariate(2, 0.4)
+#         },
+#
+#         'yvelocity': {
+#             'min': 0.01,
+#             'max': 5,
+#             'gen': lambda: random.gammavariate(2, 0.3)
+#         },
+#
+#         'x_prob_change_dir': {
+#             'min': 0.01,
+#             'max': 0.07,
+#             'gen': lambda: random.uniform(0.0, 0.05)
+#         },
+#
+#         'y_prob_change_dir': {
+#             'min': 0.0,
+#             'max': 0.07,
+#             'gen': lambda: random.uniform(0.0, 0.05)
+#         },
+#     }
+#
+#     @staticmethod
+#     def _generate_gen(name):
+#         v = Invader.gene_props[name]['gen']()
+#         max_v = Invader.gene_props[name]['max']
+#         min_v = Invader.gene_props[name]['min']
+#         if v < min_v:
+#             return min_v
+#         elif v > max_v:
+#             return max_v
+#         else:
+#             return v
+#
+#     def __init__(self, **kwargs):
+#         # Generate random values and update with the ones provided in kwargs
+#         self.attributes = {
+#             k: self._generate_gen(k) for k in self.gene_props.keys()
+#         }
+#         self.attributes.update(kwargs)
+#
+#         self.genes = self.attributes
+#
+#         # Asset musuh
+#         super(Invader, self).__init__(sge.game.width / 2., sge.game.height / 2. - 80,
+#                                       sprite=sge.gfx.Sprite(name='invader'),
+#                                       image_blend=sge.gfx.Color('white'),
+#                                       checks_collisions=False)
+#
+#         self.xvelocity = self.attributes.get('xvelocity')
+#         self.yvelocity = self.attributes.get('yvelocity')
+#         blend = int(self.attributes.get('alpha'))
+#         scale = self.attributes.get('scale')
+#         self.bbox_width = (self.sprite.width * scale)
+#         self.bbox_height = (self.sprite.height * scale)
+#         self.image_blend = sge.gfx.Color([blend, blend, blend])
+#         self.image_xscale = scale
+#         self.image_yscale = scale
+#         self.fitness = 0
+#
+#     # Event step merupakan Event Listener yang terkait dengan library sge berarti
+#     # konsep untuk merespon kegiatan yang terjadi didalam suatuobjek.
+#
+#     def event_step(self, time_passed, delta_mult):
+#         self.fitness += 1
+#         # Change directions
+#         if random.random() <= self.attributes.get('x_prob_change_dir'):
+#             self.xvelocity = -self.xvelocity
+#         if random.random() <= self.attributes.get('y_prob_change_dir'):
+#             self.yvelocity = -self.yvelocity
+#
+#         # Bouncing off the edges and the wall
+#         if self.bbox_left < 0:
+#             self.bbox_left = 0
+#             self.xvelocity = abs(self.xvelocity)
+#         elif self.bbox_right > sge.game.current_room.width:
+#             self.bbox_right = sge.game.current_room.width
+#             self.xvelocity = -abs(self.xvelocity)
+#         if self.bbox_top < 0:
+#             self.bbox_top = 0
+#             self.yvelocity = abs(self.yvelocity)
+#         if self.bbox_bottom > game.RESY - (game.WALL_YOFFSET + game.WALL_HEIGHT):
+#             self.bbox_bottom = game.RESY - (game.WALL_YOFFSET + game.WALL_HEIGHT)
+#             self.yvelocity = -abs(self.yvelocity)
+#
+#     def compare_fitness(self, other):
+#         if not isinstance(other, Invader):
+#             raise ValueError('Incomparable types')
+#         return self.fitness.__cmp__(other.fitness)
+
+import random
+import sge
+
 class Invader(sge.dsp.Object):
     gene_props = {
         'scale': {
@@ -20,40 +136,38 @@ class Invader(sge.dsp.Object):
             'max': 7,
             'gen': lambda: random.gammavariate(4, 0.5) + 1
         },
-
         'alpha': {
             'min': 5,
             'max': 255,
             'gen': lambda: random.randint(20, 255)
         },
-
         'xvelocity': {
             'min': 0.01,
             'max': 5,
             'gen': lambda: random.gammavariate(2, 0.4)
         },
-
         'yvelocity': {
             'min': 0.01,
             'max': 5,
             'gen': lambda: random.gammavariate(2, 0.3)
         },
-
         'x_prob_change_dir': {
             'min': 0.01,
             'max': 0.07,
             'gen': lambda: random.uniform(0.0, 0.05)
         },
-
         'y_prob_change_dir': {
             'min': 0.0,
             'max': 0.07,
             'gen': lambda: random.uniform(0.0, 0.05)
         },
+        'colors': ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink']
     }
 
     @staticmethod
     def _generate_gen(name):
+        if name == 'colors':
+            return random.choice(Invader.gene_props[name])
         v = Invader.gene_props[name]['gen']()
         max_v = Invader.gene_props[name]['max']
         min_v = Invader.gene_props[name]['min']
@@ -85,7 +199,8 @@ class Invader(sge.dsp.Object):
         scale = self.attributes.get('scale')
         self.bbox_width = (self.sprite.width * scale)
         self.bbox_height = (self.sprite.height * scale)
-        self.image_blend = sge.gfx.Color([blend, blend, blend])
+        color = self.attributes.get('colors')
+        self.image_blend = sge.gfx.Color(color)
         self.image_xscale = scale
         self.image_yscale = scale
         self.fitness = 0
@@ -119,6 +234,9 @@ class Invader(sge.dsp.Object):
         if not isinstance(other, Invader):
             raise ValueError('Incomparable types')
         return self.fitness.__cmp__(other.fitness)
+
+
+
 
 
 class Player(sge.dsp.Object):

@@ -1,6 +1,15 @@
 import random
 from operator import attrgetter
+from colormath.color_objects import sRGBColor
+from colormath.color_conversions import convert_color
 
+def blend_colors(color1, color2, ratio=0.5):
+    blended_color = (
+        int(color1[0] * ratio + color2[0] * (1 - ratio)),
+        int(color1[1] * ratio + color2[1] * (1 - ratio)),
+        int(color1[2] * ratio + color2[2] * (1 - ratio))
+    )
+    return blended_color
 
 def bound_value(v, min_v, max_v):
     return min(max(min_v, v), max_v)
@@ -12,17 +21,20 @@ def recombinate(pairs, gene_props, mutation_probability=0.1, effect=0.5):
         children_genes = {}
         for gen in p1.genes.keys():
             values = [p1.genes[gen], p2.genes[gen]]
-            children_genes[gen] = random.uniform(min(values), max(values))
-            if random.random() < mutation_probability:
-                min_v = gene_props[gen]['min']
-                max_v = gene_props[gen]['max']
-                v = children_genes[gen]
-                rv = random.choice([-1, 1]) * random.uniform(0, effect * (max_v - min_v))
-                # new_v_gauss = bound_value(random.gauss(v, (max_v - min_v) * effect), min_v, max_v)
-                new_v = bound_value(v + rv, min_v, max_v)
-                # print '----- Mutating ' + gen + ' - RV: ' + str(rv) + ' - V: ' + str(v) + ' - New: ' + str(new_v) + ' - Gaussian: ' + str(new_v_gauss)
-                # rv = random.uniform(children_genes[gen], (max_v - min_v)*0.1)
-                children_genes[gen] = new_v
+            if gen == "colors":
+                children_genes[gen] = blend_colors(min(values), max(values))
+            else:
+                children_genes[gen] = random.uniform(min(values), max(values))
+                if random.random() < mutation_probability:
+                    min_v = gene_props[gen]['min']
+                    max_v = gene_props[gen]['max']
+                    v = children_genes[gen]
+                    rv = random.choice([-1, 1]) * random.uniform(0, effect * (max_v - min_v))
+                    # new_v_gauss = bound_value(random.gauss(v, (max_v - min_v) * effect), min_v, max_v)
+                    new_v = bound_value(v + rv, min_v, max_v)
+                    # print '----- Mutating ' + gen + ' - RV: ' + str(rv) + ' - V: ' + str(v) + ' - New: ' + str(new_v) + ' - Gaussian: ' + str(new_v_gauss)
+                    # rv = random.uniform(children_genes[gen], (max_v - min_v)*0.1)
+                    children_genes[gen] = new_v
         offspring.append(children_genes)
     return offspring
 
