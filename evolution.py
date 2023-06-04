@@ -1,7 +1,5 @@
 import random
 from operator import attrgetter
-from colormath.color_objects import sRGBColor
-from colormath.color_conversions import convert_color
 
 def blend_colors(color1, color2, ratio=0.5):
     blended_color = (
