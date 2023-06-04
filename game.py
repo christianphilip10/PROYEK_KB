@@ -11,7 +11,6 @@ RESY = 540
 #Objects position
 PLAYER_YOFFSET = 50
 PLAYER_SPEED = 4
-BULLET_START_SPEED = 20
 WALL_YOFFSET = 70
 WALL_HEIGHT = 2
 
@@ -29,6 +28,10 @@ MIN_NINV = 4
 
 #Number of invaders to lose the game
 MAX_NINV = 100
+
+SCORES = 0
+UPGRADE = False
+DOUBLE_SHOOT = False
 
 class InvadersGame(sge.dsp.Game):
     """
@@ -53,7 +56,8 @@ class InvadersGame(sge.dsp.Game):
         self.clock.tick()
         hud_string = 'SCORE: {0:03d}  INVADERS: {1:03d}'
         num_invaders = sum(1 for o in self.current_room.objects if isinstance(o, objects.Invader))
-        self.project_text(self.hud_font, hud_string.format(self.score, num_invaders), 5, 5, anti_alias=False)
+        self.project_text(self.hud_font, hud_string.format(SCORES, num_invaders), 5, 5, anti_alias=False)
+
         if self.game_over:
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Game\nOver', RESX/2, RESY/2 - 140, halign='center', valign='center')
 
@@ -71,7 +75,20 @@ class InvadersGame(sge.dsp.Game):
             if GENERATION_TIME > MIN_GEN_TIME:
                 GENERATION_TIME -= 150
 
+
     def event_step(self, time_passed, delta_mult):
+        if SCORES % 15 == 0 and SCORES != 0:
+            if SCORES < 65:
+                self.project_text(self.hud_font, "Got Upgrade!!", 5, 30,
+                              anti_alias=False)
+        if SCORES % 10 == 0 and SCORES != 0:
+            if SCORES == 50:
+                self.project_text(self.hud_font, "Got Upgrade Double Bullet", 5, 30,
+                                  anti_alias=False)
+            elif SCORES < 70:
+                self.project_text(self.hud_font, "Got Upgrade!!", 5, 30,
+                              anti_alias=False)
+
         num_invaders = sum(1 for o in
                    self.current_room.objects if isinstance(o, objects.Invader))
         self.show_hud()
@@ -159,4 +176,5 @@ class InvadersGame(sge.dsp.Game):
 
 class GameRoom(sge.dsp.Room):
     def event_step(self, time_passed, delta_mult):
+
         pass

@@ -6,8 +6,12 @@ import game
 pygame.init()
 pygame.mixer.init()
 
+BULLET_SIZE = 2
 SHOOT_SOUND = pygame.mixer.Sound('bullet.wav')
 SHOOT_SOUND.set_volume(1)
+UPGRADE_SOUND = pygame.mixer.Sound('upgrade.wav')
+UPGRADE_SOUND.set_volume(1)
+
 
 class Invader(sge.dsp.Object):
     gene_props = {
@@ -122,6 +126,7 @@ class Player(sge.dsp.Object):
     def __init__(self):
         self.lkey = "left"
         self.rkey = "right"
+        self.double = False
         x = sge.game.width / 2.
         y = sge.game.height - game.PLAYER_YOFFSET
         # asset player
@@ -129,6 +134,7 @@ class Player(sge.dsp.Object):
 
         # Load the shoot sound
         self.shoot_sound = SHOOT_SOUND
+
 
     def event_step(self, time_passed, delta_mult):
         # Movement
@@ -164,23 +170,37 @@ class Player(sge.dsp.Object):
 
                 # Add the bullet object
                 sge.game.current_room.add(PlayerBullet(self))
-
-
+                if game.DOUBLE_SHOOT == True:
+                    self.double = True
+                    sge.game.current_room.add(PlayerBullet(self))
+                    self.double = False
 
 
 class PlayerBullet(sge.dsp.Object):
-
     def __init__(self, player):
+        self.bullet_size = 1
+        self.bullet_speed = 5
+        self.upgrade_sound = UPGRADE_SOUND
+        self.killed = False
         # The bullet appears out of the hands of nao
-        x = (player.x if player.image_xscale == -1
-             else player.x + player.bbox_width)
-        ball_sprite = sge.gfx.Sprite(width=3, height=40, origin_x=4, origin_y=4)
+        if game.DOUBLE_SHOOT == False:
+            x = player.x + player.bbox_width / 2
+        else:
+            if player.double == True:
+                x = player.x + player.bbox_width
+            else:
+                x = player.x
+
+        ball_sprite = sge.gfx.Sprite(width=self.bullet_size, height=40, origin_x=4, origin_y=4)
         ball_sprite.draw_rectangle(0, 0, ball_sprite.width, ball_sprite.height,
                                    fill=game.CITIUS_COLOR)
+
         super(PlayerBullet, self).__init__(x, player.y, sprite=ball_sprite)
 
+
+
     def event_create(self):
-        self.yvelocity = -game.BULLET_START_SPEED
+        self.yvelocity = -self.bullet_speed
 
     def event_step(self, time_passed, delta_mult):
         if self.bbox_bottom < 0:
@@ -188,7 +208,36 @@ class PlayerBullet(sge.dsp.Object):
         else:
             # Collision detection only for bullets
             killed = self.collision(other=Invader)
+
             if killed:
                 # We only kill the first colliding Invader
                 killed[0].destroy()
+                game.SCORES = game.SCORES + 1
                 self.destroy()
+                self.killed = True
+
+        if game.SCORES % 10 == 0 and game.SCORES != 0 :
+            if game.SCORES == 70:
+                self.bullet_speed = self.bullet_speed + 15
+            elif game.SCORES < 70:
+                self.bullet_speed = self.bullet_speed + 10
+                game.UPGRADE = True
+                if self.killed == True:
+                    self.upgrade_sound.play()
+                self.killed = False
+
+        if game.SCORES % 20 == 0 and game.SCORES != 0:
+            if game.SCORES == 100:
+                self.bullet_size = self.bullet_size + 1
+            elif game.SCORES < 80:
+                self.bullet_size = self.bullet_size + 1
+                game.UPGRADE = True
+                if self.killed == True:
+                    self.upgrade_sound.play()
+                self.killed = False
+
+        if game.SCORES % 50 == 0 and game.SCORES != 0:
+            if game.SCORES == 50:
+                game.DOUBLE_SHOOT = True
+
+
