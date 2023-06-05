@@ -10,7 +10,7 @@ if __name__ == '__main__':
     game.InvadersGame()
 
     # Load backgrounds
-    wall_sprite = sge.gfx.Sprite(name='space')
+    wall_sprite = sge.gfx.Sprite(name='final_space')
     layers = [sge.gfx.BackgroundLayer(wall_sprite,0 ,0)]
     background = sge.gfx.Background(layers, sge.gfx.Color('black'))
 
