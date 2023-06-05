@@ -83,7 +83,7 @@ class Invader(sge.dsp.Object):
 
         # Asset musuh
         super(Invader, self).__init__(sge.game.width / 2., sge.game.height / 2. - 80,
-                                      sprite=sge.gfx.Sprite(name='invader'),
+                                      sprite=sge.gfx.Sprite(name='E_kraken'),
                                       image_blend=sge.gfx.Color('white'),
                                       checks_collisions=False)
 
