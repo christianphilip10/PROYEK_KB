@@ -1,6 +1,6 @@
 import random
 from operator import attrgetter
-
+#Evolution
 def blend_colors(color1, color2, ratio=0.5):
     blended_color = (
         int(color1[0] * ratio + color2[0] * (1 - ratio)),
