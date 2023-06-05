@@ -16,7 +16,7 @@ DESTROY_SOUND.set_volume(0.3)
 
 
 # bakcgorund music
-BACKGROUND_SOUND = pygame.mixer.Sound('Assets/bullet.wav')
+BACKGROUND_SOUND = pygame.mixer.Sound('Assets/arcade.wav')
 BACKGROUND_SOUND.set_volume(0.5)
 
 #upgrade music
