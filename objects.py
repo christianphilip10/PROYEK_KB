@@ -5,6 +5,7 @@ import game
 
 pygame.init()
 pygame.mixer.init()
+
 # Shootsound
 SHOOT_SOUND = pygame.mixer.Sound('Assets/bullet.wav')
 SHOOT_SOUND.set_volume(1)
@@ -195,7 +196,7 @@ class PlayerBullet(sge.dsp.Object):
         self.upgrade_sound = UPGRADE_SOUND
         self.killed = False
 
-        # The bullet appears out of the hands of nao
+        # The bullet appears out of the spaceplane
         if game.DOUBLE_SHOOT == False:
             x = player.x + player.bbox_width / 2
         else:
