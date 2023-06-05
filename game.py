@@ -41,7 +41,8 @@ class InvadersGame(sge.dsp.Game):
 
     def __init__(self):
         """Initializes a new InvadersGame, with all parameters properly set"""
-        super(InvadersGame, self).__init__(width=RESX, height=RESY, fps=120, collision_events_enabled=False, window_text="BEHOLD EVOLUTIONARY")
+        super(InvadersGame, self).__init__(width=RESX, height=RESY, fps=120, collision_events_enabled=False,
+                                           window_text="Kraken Lore")
         self.gensprite = sge.gfx.Sprite(width=RESX, height=RESY, origin_x=0, origin_y=0)
         self.scoresprite = sge.gfx.Sprite(width=320, height=120, origin_x=100, origin_y=100)
         self.hud_font = sge.gfx.Font('minecraftia.ttf', size=20)
