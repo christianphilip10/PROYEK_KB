@@ -10,9 +10,8 @@ if __name__ == '__main__':
     game.InvadersGame()
 
     # Load backgrounds
-    wall_sprite = sge.gfx.Sprite(width=game.RESX, height=game.WALL_HEIGHT)
-    wall_sprite.draw_rectangle(0, 0, wall_sprite.width, wall_sprite.height, fill=sge.gfx.Color('blue'))
-    layers = [sge.gfx.BackgroundLayer(wall_sprite, 0, game.RESY - game.WALL_YOFFSET)]
+    wall_sprite = sge.gfx.Sprite(name='space')
+    layers = [sge.gfx.BackgroundLayer(wall_sprite,0 ,0)]
     background = sge.gfx.Background(layers, sge.gfx.Color('black'))
 
     # Create objects
