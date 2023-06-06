@@ -20,6 +20,7 @@ pygame.mixer.music.load('Assets/arcade.wav')
 pygame.mixer.music.set_volume(0.5)
 pygame.mixer.music.play(-1)
 
+
 #upgrade music
 UPGRADE_SOUND = pygame.mixer.Sound('Assets/upgrade.wav')
 UPGRADE_SOUND.set_volume(1)
@@ -188,8 +189,6 @@ class Player(sge.dsp.Object):
                     self.double = False
 
 
-
-
 class PlayerBullet(sge.dsp.Object):
     def __init__(self, player):
         self.bullet_size = 1
@@ -212,8 +211,6 @@ class PlayerBullet(sge.dsp.Object):
 
         super(PlayerBullet, self).__init__(x, player.y, sprite=ball_sprite)
 
-
-
     def event_create(self):
         self.yvelocity = -self.bullet_speed
 
@@ -231,9 +228,12 @@ class PlayerBullet(sge.dsp.Object):
                 DESTROY_SOUND.play()
                 self.destroy()
                 self.killed = True
-        if game.SCORES % 10 == 0 and game.SCORES != 0 :
+        if game.SCORES % 10 == 0 and game.SCORES != 0:
             if game.SCORES == 70:
                 self.bullet_speed = self.bullet_speed + 15
+                if self.killed == True:
+                    self.upgrade_sound.play()
+                self.killed = False
             elif game.SCORES < 70:
                 self.bullet_speed = self.bullet_speed + 10
                 game.UPGRADE = True
@@ -243,7 +243,10 @@ class PlayerBullet(sge.dsp.Object):
 
         if game.SCORES % 20 == 0 and game.SCORES != 0:
             if game.SCORES == 100:
-                self.bullet_size = self.bullet_size + 1
+                self.bullet_size = self.bullet_size + 2
+                if self.killed == True:
+                    self.upgrade_sound.play()
+                self.killed = False
             elif game.SCORES < 80:
                 self.bullet_size = self.bullet_size + 1
                 game.UPGRADE = True
@@ -254,3 +257,6 @@ class PlayerBullet(sge.dsp.Object):
         if game.SCORES % 50 == 0 and game.SCORES != 0:
             if game.SCORES == 50:
                 game.DOUBLE_SHOOT = True
+                if self.killed == True:
+                    self.upgrade_sound.play()
+                self.killed = False

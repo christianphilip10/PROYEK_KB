@@ -1,4 +1,5 @@
 import sge
+
 import objects
 import evolution
 import time
@@ -32,6 +33,7 @@ SCORES = 0
 UPGRADE = False
 DOUBLE_SHOOT = False
 
+
 class InvadersGame(sge.dsp.Game):
     """
     Kelas utama untuk permainan. Ini mengatur tindakan global yang mempengaruhi semua
@@ -44,6 +46,7 @@ class InvadersGame(sge.dsp.Game):
                                            window_text="Kraken Lore")
         self.gensprite = sge.gfx.Sprite(width=RESX, height=RESY, origin_x=0, origin_y=0)
         self.scoresprite = sge.gfx.Sprite(width=320, height=120, origin_x=100, origin_y=100)
+
         self.hud_font = sge.gfx.Font('minecraftia.ttf', size=20)
         self.pairs = None
         self.score = 0
@@ -55,12 +58,14 @@ class InvadersGame(sge.dsp.Game):
     def show_hud(self):
         self.clock.tick()
         # Menampilkan Score yang didapat dan banyaknya Kraken yang bermunculan
-        hud_string = 'SCORE: {0:03d}  KRAKEN: {1:03d}'
+        hud_string = 'HIGHSCORE: {0:03d}  KRAKEN: {1:03d}\nSCORE: {2:03d}'
         num_invaders = sum(1 for o in self.current_room.objects if isinstance(o, objects.Invader))
-        self.project_text(self.hud_font, hud_string.format(SCORES, num_invaders), 5, 5, anti_alias=False)
+        self.project_text(self.hud_font, hud_string.format(30, num_invaders, SCORES), 5, 5, anti_alias=False)
 
         if self.game_over:
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Game\nOver', RESX/2, RESY/2 - 140, halign='center', valign='center')
+            self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'HIGH SCORE: ', RESX / 2, RESY / 2 + 140,
+                              halign='center', valign='center')
 
     def new_generation(self):
         # Menghasilkan Invaders baru dan mengurangi waktu generasi yang menjadi tantangan player
@@ -81,17 +86,17 @@ class InvadersGame(sge.dsp.Game):
     def event_step(self, time_passed, delta_mult):
         # Jika kondisi terpenuhi maka tembakan pelurunya akan terupdate
         # Program peluru diupdate ada di object.py
-        if SCORES % 15 == 0 and SCORES != 0:
-            if SCORES < 65:
-                self.project_text(self.hud_font, "Got Upgrade!!", 5, 30,
-                              anti_alias=False)
+
         if SCORES % 10 == 0 and SCORES != 0:
             if SCORES == 50:
-                self.project_text(self.hud_font, "Got Upgrade Double Bullet", 5, 30,
+                self.project_text(self.hud_font, "Got Upgrade Double Bullet!!", 5, 65,
                                   anti_alias=False)
             elif SCORES < 70:
-                self.project_text(self.hud_font, "Got Upgrade!!", 5, 30,
+                self.project_text(self.hud_font, "Got Upgrade!!", 5, 65,
                               anti_alias=False)
+            elif SCORES == 100:
+                self.project_text(self.hud_font, "Got Upgrade!!", 5, 65,
+                                  anti_alias=False)
 
         num_invaders = sum(1 for o in
                    self.current_room.objects if isinstance(o, objects.Invader))
@@ -129,6 +134,7 @@ class InvadersGame(sge.dsp.Game):
         # Key untuk melakukan pause game
         elif not self.game_over and key in ('p', 'enter'):
             self.pause()
+
 
     def event_close(self):
         self.end()
