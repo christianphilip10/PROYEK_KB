@@ -33,6 +33,10 @@ SCORES = 0
 UPGRADE = False
 DOUBLE_SHOOT = False
 
+#highscore
+HSSCORE = 'HighScore.txt'
+with open(HSSCORE) as file:
+    HIGHSCORE = int(file.read())
 
 class InvadersGame(sge.dsp.Game):
     """
@@ -60,11 +64,14 @@ class InvadersGame(sge.dsp.Game):
         # Menampilkan Score yang didapat dan banyaknya Kraken yang bermunculan
         hud_string = 'HIGHSCORE: {0:03d}  KRAKEN: {1:03d}\nSCORE: {2:03d}'
         num_invaders = sum(1 for o in self.current_room.objects if isinstance(o, objects.Invader))
-        self.project_text(self.hud_font, hud_string.format(30, num_invaders, SCORES), 5, 5, anti_alias=False)
+        if SCORES > HIGHSCORE:
+            self.project_text(self.hud_font, hud_string.format(SCORES, num_invaders, SCORES), 5, 5, anti_alias=False)
+        else:
+            self.project_text(self.hud_font, hud_string.format(HIGHSCORE, num_invaders, SCORES), 5, 5, anti_alias=False)
 
         if self.game_over:
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Game\nOver', RESX/2, RESY/2 - 140, halign='center', valign='center')
-            self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'HIGH SCORE: ', RESX / 2, RESY / 2 + 140,
+            self.project_text(sge.gfx.Font('minecraftia.ttf', size=40), 'HIGH SCORE: ', RESX / 2, RESY / 2 + 100,
                               halign='center', valign='center')
 
     def new_generation(self):
@@ -82,8 +89,12 @@ class InvadersGame(sge.dsp.Game):
             if GENERATION_TIME > MIN_GEN_TIME:
                 GENERATION_TIME -= 150
 
-
     def event_step(self, time_passed, delta_mult):
+        #update highscore
+        if SCORES > HIGHSCORE:
+            with open('HighScore.txt', 'w') as f:
+                f.write(str(SCORES))
+
         # Jika kondisi terpenuhi maka tembakan pelurunya akan terupdate
         # Program peluru diupdate ada di object.py
 
@@ -192,6 +203,7 @@ class InvadersGame(sge.dsp.Game):
 
     def event_paused_close(self):
         self.event_close()
+
 
 class GameRoom(sge.dsp.Room):
     def event_step(self, time_passed, delta_mult):

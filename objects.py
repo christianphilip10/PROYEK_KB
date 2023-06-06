@@ -225,6 +225,7 @@ class PlayerBullet(sge.dsp.Object):
                 # We only kill the first colliding Invader
                 killed[0].destroy()
                 game.SCORES = game.SCORES + 1
+
                 DESTROY_SOUND.play()
                 self.destroy()
                 self.killed = True
