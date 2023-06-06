@@ -8,18 +8,17 @@ from pygame.time import Clock
 RESX = 960
 RESY = 540
 
-#Objects position
+# Objects position
 PLAYER_YOFFSET = 50
 PLAYER_SPEED = 4
 WALL_YOFFSET = 70
 WALL_HEIGHT = 2
 
-#Number of ms between generations (it is reduced with each generation
-#until a lower limit)
+# Number of ms between generations (it is reduced with each generation until a lower limit)
 GENERATION_TIME = 5000
 MIN_GEN_TIME = 2000
 
-#Citius color
+# Citius color
 CITIUS_COLOR = sge.gfx.Color('#EF7D10')
 IMMUNIT_COLOR = sge.gfx.Color('#15AFF0')
 
@@ -40,7 +39,7 @@ class InvadersGame(sge.dsp.Game):
     """
 
     def __init__(self):
-        """Initializes a new InvadersGame, with all parameters properly set"""
+        # Menginisialisasi InvadersGame baru, dengan semua parameter diatur
         super(InvadersGame, self).__init__(width=RESX, height=RESY, fps=120, collision_events_enabled=False,
                                            window_text="Kraken Lore")
         self.gensprite = sge.gfx.Sprite(width=RESX, height=RESY, origin_x=0, origin_y=0)
@@ -55,7 +54,8 @@ class InvadersGame(sge.dsp.Game):
 
     def show_hud(self):
         self.clock.tick()
-        hud_string = 'SCORE: {0:03d}  INVADERS: {1:03d}'
+        # Menampilkan Score yang didapat dan banyaknya Kraken yang bermunculan
+        hud_string = 'SCORE: {0:03d}  KRAKEN: {1:03d}'
         num_invaders = sum(1 for o in self.current_room.objects if isinstance(o, objects.Invader))
         self.project_text(self.hud_font, hud_string.format(SCORES, num_invaders), 5, 5, anti_alias=False)
 
@@ -63,6 +63,7 @@ class InvadersGame(sge.dsp.Game):
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Game\nOver', RESX/2, RESY/2 - 140, halign='center', valign='center')
 
     def new_generation(self):
+        # Menghasilkan Invaders baru dan mengurangi waktu generasi yang menjadi tantangan player
         global GENERATION_TIME
         inv = {o for o in self.current_room.objects if isinstance(o, objects.Invader)}
         #The number of new individuals is determined by a box-cox
@@ -78,6 +79,8 @@ class InvadersGame(sge.dsp.Game):
 
 
     def event_step(self, time_passed, delta_mult):
+        # Jika kondisi terpenuhi maka tembakan pelurunya akan terupdate
+        # Program peluru diupdate ada di object.py
         if SCORES % 15 == 0 and SCORES != 0:
             if SCORES < 65:
                 self.project_text(self.hud_font, "Got Upgrade!!", 5, 30,
@@ -93,11 +96,18 @@ class InvadersGame(sge.dsp.Game):
         num_invaders = sum(1 for o in
                    self.current_room.objects if isinstance(o, objects.Invader))
         self.show_hud()
+
+        # Game akan selesai jika jumlah Kraken melebihi batas maksimal Kraken (dibatasi 100)
         self.game_over = num_invaders >= MAX_NINV
         if not self.game_over:
             self.last_gen += time_passed
+
+        # jika sudah melewati ambang batas, saatnya berkembang biak lagi
         if self.last_gen >= GENERATION_TIME:
             self.new_generation()
+
+        # Kondisi ketika jumlah Kraken saat ini dibawah batas minimal Kraken (batas min = 4)
+        # Kita tidak bisa menunggu mereka sampai selesai berkembang biak
         elif num_invaders <= MIN_NINV:
             for inv in (o for o in self.current_room.objects
                                             if isinstance(o, objects.Invader)):
@@ -107,12 +117,16 @@ class InvadersGame(sge.dsp.Game):
                                     outline_thickness=2)
 
     def event_key_press(self, key, char):
+        # Key untuk melakukan Screenshot
         if key == 'f8':
             sge.gfx.Sprite.from_screenshot().save(time.strftime('%Y-%m-%d_%H%M%S')+'.jpg')
+        # Key untuk melakukan Fullscreen
         elif key == 'f11':
             self.fullscreen = not self.fullscreen
+        # Key untuk keluar dari permainan
         elif key == 'escape':
             self.event_close()
+        # Key untuk melakukan pause game
         elif not self.game_over and key in ('p', 'enter'):
             self.pause()
 
@@ -122,7 +136,8 @@ class InvadersGame(sge.dsp.Game):
     def event_paused_step(self, time_passed, delta_mult):
         self.show_hud()
         if self.pairs:
-            #Draw the next cross operation
+            # Menggambar bagaimana operasi crossover terjadi
+            # Operasi Crossover / perkawinan akan berhenti selama 5 detik
             i1, i2 = self.pairs.pop()
             self.gensprite.draw_clear()
             self.gensprite.draw_circle(i1.x+i1.bbox_width/2,
@@ -136,16 +151,16 @@ class InvadersGame(sge.dsp.Game):
                                      i2.x+i2.bbox_width/2,
                                      i2.y+i2.bbox_height/2,
                                      CITIUS_COLOR, thickness=2)
+
             children_genes = evolution.recombinate([(i1, i2)],
                                                  objects.Invader.gene_props)[0]
-            #And add the new individual
+            # Menambah individu childeren_genes yang tadi dilakukan dari hasil perkawinan
             desc = objects.Invader(**children_genes)
             desc.x, desc.y = (i1.x + i2.x)/2, (i1.y+i2.y)/2
             self.current_room.add(desc)
-            #Slow down painting to visually improve the animation
+            # Perlambat penggambaran untuk meningkatkan animasi secara visual
             if self.anim_sleep is None:
-                #The animation time is adjusted according to the number of new
-                #individuals.
+                # Waktu animasi disesuaikan dengan jumlah individu baru tadi.
                 self.anim_sleep = (1.0 if len(self.pairs) == 0
                                        else 0 if len(self.pairs) > 50
                                            else min(1.0, 3.0/len(self.pairs)))
@@ -154,7 +169,7 @@ class InvadersGame(sge.dsp.Game):
             else:
                 time.sleep(self.anim_sleep)
         elif self.pairs is not None:
-            #Crossing is finished
+            # Crossover selesai, game dapat berjalan kembali
             time.sleep(self.anim_sleep)
             self.pairs = self.anim_sleep = None
             self.score += 1
@@ -163,19 +178,15 @@ class InvadersGame(sge.dsp.Game):
 
     def event_paused_key_press(self, key, char):
         if key == 'escape':
-            # This allows the player to still exit while the game is
-            # paused, rather than having to unpause first.
+            # Jika tombol escape ditekan, maka game berhenti
             self.event_close()
         else:
             if self.pairs is None:
                 self.unpause()
 
     def event_paused_close(self):
-        # This allows the player to still exit while the game is paused,
-        # rather than having to unpause first.
         self.event_close()
 
 class GameRoom(sge.dsp.Room):
     def event_step(self, time_passed, delta_mult):
-
         pass
