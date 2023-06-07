@@ -71,8 +71,15 @@ class InvadersGame(sge.dsp.Game):
 
         if self.game_over:
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Game\nOver', RESX/2, RESY/2 - 140, halign='center', valign='center')
-            self.project_text(sge.gfx.Font('minecraftia.ttf', size=40), 'HIGH SCORE: ', RESX / 2, RESY / 2 + 100,
+            self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'SCORE: ' + str(SCORES), RESX / 2, RESY / 2 + 100,
                               halign='center', valign='center')
+            if SCORES <= HIGHSCORE:
+                self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'HIGH SCORE: ' + str(HIGHSCORE), RESX / 2, RESY / 2 + 150,
+                              halign='center', valign='center')
+            else:
+                self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'HIGH SCORE: ' + str(SCORES), RESX / 2,
+                                  RESY / 2 + 150,
+                                  halign='center', valign='center')
 
     def new_generation(self):
         # Menghasilkan Invaders baru dan mengurangi waktu generasi yang menjadi tantangan player
