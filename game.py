@@ -1,9 +1,12 @@
-import sge
 
+import sge
+from sge import gfx
 import objects
 import evolution
 import time
+import pygame
 from pygame.time import Clock
+import invaders
 #tesgithub
 #Resolution constants
 RESX = 960
@@ -70,6 +73,10 @@ class InvadersGame(sge.dsp.Game):
             self.project_text(self.hud_font, hud_string.format(HIGHSCORE, num_invaders, SCORES), 5, 5, anti_alias=False)
 
         if self.game_over:
+            sge.game.mouse.visible = True
+            mouse = pygame.mouse.get_pos()
+            quit_hover = False
+            retry_hover = False
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Game\nOver', RESX/2, RESY/2 - 140, halign='center', valign='center')
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'SCORE: ' + str(SCORES), RESX / 2, RESY / 2 + 100,
                               halign='center', valign='center')
@@ -80,6 +87,32 @@ class InvadersGame(sge.dsp.Game):
                 self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'HIGH SCORE: ' + str(SCORES), RESX / 2,
                                   RESY / 2 + 150,
                                   halign='center', valign='center')
+
+            if 685 > mouse[0] > 615 and 500 > mouse[1] > 484:
+                color_pause_quit = gfx.Color("gray")
+                quit_hover = True
+            else:
+                color_pause_quit = gfx.Color("white")
+            if 320 > mouse[0] > 256 and 505 > mouse[1] > 484:
+                color_pause_retry = gfx.Color("gray")
+                retry_hover = True
+            else:
+                color_pause_retry= gfx.Color("white")
+
+            self.project_text(self.hud_font, "Retry", 256, 480,
+                              anti_alias=False, color=color_pause_retry)
+            self.project_text(self.hud_font, "Exit", 614, 480,
+                              anti_alias=False , color=color_pause_quit)
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONUP and retry_hover == True:
+                    invaders.retry = True
+                    invaders.run_game()
+                    self.end()
+
+                elif event.type == pygame.MOUSEBUTTONUP and quit_hover == True:
+                    self.end()
+                quit_hover = False
+                retry_hover = False
 
     def new_generation(self):
         # Menghasilkan Invaders baru dan mengurangi waktu generasi yang menjadi tantangan player
@@ -97,6 +130,7 @@ class InvadersGame(sge.dsp.Game):
                 GENERATION_TIME -= 150
 
     def event_step(self, time_passed, delta_mult):
+        sge.game.mouse.visible = False
         #update highscore
         if SCORES > HIGHSCORE:
             with open('HighScore.txt', 'w') as f:
@@ -157,6 +191,7 @@ class InvadersGame(sge.dsp.Game):
     def event_close(self):
         self.end()
 
+
     def event_paused_step(self, time_passed, delta_mult):
         self.show_hud()
         if self.pairs:
@@ -199,6 +234,35 @@ class InvadersGame(sge.dsp.Game):
             self.score += 1
             self.last_gen = 0
             self.unpause()
+        else:
+            quit_hover = False
+            continue_hover = False
+            sge.game.mouse.visible = True
+            mouse = pygame.mouse.get_pos()
+
+            if 512 > mouse[0] > 468 and 413 > mouse[1] > 395:
+                color_pause_quit = gfx.Color("gray")
+                quit_hover = True
+            else:
+                color_pause_quit = gfx.Color("white")
+            if 541 > mouse[0] > 439 and 363 > mouse[1] > 345:
+                color_pause_continue = gfx.Color("gray")
+                continue_hover = True
+            else:
+                color_pause_continue = gfx.Color("white")
+
+            self.project_text(self.hud_font, "Continue", 437, 340,
+                              anti_alias=False, color=color_pause_continue)
+            self.project_text(self.hud_font, "Exit", 467, 390,
+                              anti_alias=False , color=color_pause_quit)
+            for event in pygame.event.get():
+                if event.type == pygame.MOUSEBUTTONUP and continue_hover == True:
+                    self.unpause()
+                elif event.type == pygame.MOUSEBUTTONUP and quit_hover == True:
+                    self.end()
+                quit_hover = False
+                continue_hover = False
+
 
     def event_paused_key_press(self, key, char):
         if key == 'escape':
