@@ -33,12 +33,6 @@ def recombinate(pairs, gene_props, mutation_probability=0.1, effect=0.5):
         offspring.append(children_genes)
     return offspring
 
-# Fungsi untuk memilih pasangan individu yang akan melakukan perkawinan (mating)
-# Pemilihan pasangan individu menggunakan roulette_wheele
-def mating_pool(population, num_of_pairs=10, evaluator=attrgetter('fitness')):
-    evaluated_population = evaluate(population, evaluator)
-    return zip(roulette_wheel(evaluated_population, k=num_of_pairs),
-               roulette_wheel(evaluated_population, k=num_of_pairs))
 
 # Fungsi ini juga digunakan untuk memilih pasangan individu untuk perkawinan, namun menggunakan metode turnamen.
 # Individu dipilih secara acak dan dibandingkan berdasarkan fitness mereka.
@@ -50,27 +44,6 @@ def mating_pool_tournament(population, num_of_pairs=10, evaluator=attrgetter('fi
         p2 = tournament(population - {p1}, evaluator)
         pool.append((p1, p2))
     return pool
-
-# Fungsi ini digunakan untuk mengevaluasi populasi dengan menggunakan fungsi evaluator yang diberikan.
-# Fungsi evaluator digunakan untuk menghitung nilai fitness individu.
-# Hasil evaluasi populasi berupa pasangan (individu, fitness).
-def evaluate(population, evaluator=attrgetter('fitness')):
-    return map(lambda x: (x, evaluator(x)), population)
-
-# Fungsi ini mengimplementasikan metode roda roulette untuk memilih individu dari populasi yang telah dievaluasi.
-# Individu dipilih dengan mempertimbangkan fitness mereka.
-# Semakin tinggi fitness = semakin besar kemungkinan individu terpilih.
-def roulette_wheel(evaluated_population, k=10):
-    sum_fitness = sum([v[1] for v in evaluated_population])
-    selected = []
-    while len(selected) < k:
-        r = random.uniform(0, sum_fitness)
-        for i in evaluated_population:
-            r -= i[1]
-            if r < 0:
-                selected.append(i[0])
-                break
-    return selected
 
 # Fungsi ini mengimplementasikan metode turnamen untuk memilih individu dari populasi.
 # Beberapa individu dipilih secara acak dari populasi dan dibandingkan berdasarkan fitness mereka.
