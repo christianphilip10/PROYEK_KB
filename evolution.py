@@ -40,8 +40,12 @@ def mating_pool_tournament(population, num_of_pairs=10, evaluator=attrgetter('fi
     pool = []
     while len(pool) < num_of_pairs:
         # Generate a pair for mating
+        # misal ada 6 invader terus evaluator e dari fitness e sendiri-sendiri
+        # dimasukan kedalam turnamen
         p1 = tournament(population, evaluator)
+        # Masuk turnamen namun p1 dikeluarin dari populasi
         p2 = tournament(population - {p1}, evaluator)
+        # Jika turnamen p1 dan p2 sudah selesai melakukan turnamen, maka diappend masuk kedalam array pool
         pool.append((p1, p2))
     return pool
 
@@ -49,7 +53,15 @@ def mating_pool_tournament(population, num_of_pairs=10, evaluator=attrgetter('fi
 # Beberapa individu dipilih secara acak dari populasi dan dibandingkan berdasarkan fitness mereka.
 # Individu dengan fitness tertinggi dipilih sebagai hasil turnamen.
 def tournament(population, evaluator, k=2):
-    sample = population if len(population) < k else random.sample(population, k)
+    global sample
+    # Jika banyaknya populasi leibh kecil dari k
+    if len(population) < k:
+        # sample adalah populasi
+        sample = population
+    # Jika populasi lebih dari k
+    else:
+        # maka sample ngampil 2 populasi random
+        random.sample(population, k)
     return max(sample, key=evaluator)
 
 
