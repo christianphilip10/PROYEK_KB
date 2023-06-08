@@ -67,10 +67,8 @@ class InvadersGame(sge.dsp.Game):
         # Menampilkan Score yang didapat dan banyaknya Kraken yang bermunculan
         hud_string = 'HIGHSCORE: {0:03d}  KRAKEN: {1:03d}\nSCORE: {2:03d}'
         num_invaders = sum(1 for o in self.current_room.objects if isinstance(o, objects.Invader))
-        if SCORES > HIGHSCORE:
-            self.project_text(self.hud_font, hud_string.format(SCORES, num_invaders, SCORES), 5, 5, anti_alias=False)
-        else:
-            self.project_text(self.hud_font, hud_string.format(HIGHSCORE, num_invaders, SCORES), 5, 5, anti_alias=False)
+
+        self.project_text(self.hud_font, hud_string.format(HIGHSCORE, num_invaders, SCORES), 5, 5, anti_alias=False)
 
         if self.game_over:
             sge.game.mouse.visible = True
@@ -80,13 +78,10 @@ class InvadersGame(sge.dsp.Game):
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Game\nOver', RESX/2, RESY/2 - 140, halign='center', valign='center')
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'SCORE: ' + str(SCORES), RESX / 2, RESY / 2 + 100,
                               halign='center', valign='center')
-            if SCORES <= HIGHSCORE:
-                self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'HIGH SCORE: ' + str(HIGHSCORE), RESX / 2, RESY / 2 + 150,
+           
+            self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'HIGH SCORE: ' + str(HIGHSCORE), RESX / 2, RESY / 2 + 150,
                               halign='center', valign='center')
-            else:
-                self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'HIGH SCORE: ' + str(SCORES), RESX / 2,
-                                  RESY / 2 + 150,
-                                  halign='center', valign='center')
+
 
             if 685 > mouse[0] > 615 and 500 > mouse[1] > 484:
                 color_pause_quit = gfx.Color("gray")

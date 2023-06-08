@@ -7,6 +7,8 @@ import random
 retry = False
 
 def run_game():
+    if game.SCORES != 0:
+        game.SCORES =0
     os.chdir(os.path.dirname(os.path.realpath("__file__")))
     # Create Game object
     if (retry == False):
