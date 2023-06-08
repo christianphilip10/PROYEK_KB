@@ -30,7 +30,6 @@ def run_game():
                   (128, 0, 128)]  # Purple
         invaders = [objects.Invader(colors=colors.pop()) for _ in range(6)]
         player = objects.Player()
-        print("bb")
 
         # PLayer menjadi objek yang pertama
         obj = [player] + invaders

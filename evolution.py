@@ -83,7 +83,3 @@ def tournament(population, evaluator, k=2):
     return max(sample, key=evaluator)
 
 
-if __name__ == '__main__':
-    pop = {15, 18, 30, 100, 120, 60, 35, 40, 42}
-    print (mating_pool(pop, evaluator=lambda x: x))
-    print (mating_pool_tournament(pop, evaluator=lambda x: x))

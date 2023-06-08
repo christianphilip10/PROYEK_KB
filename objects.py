@@ -33,11 +33,6 @@ class Invader(sge.dsp.Object):
             'max': 7,
             'gen': lambda: random.gammavariate(4, 0.5) + 1
         },
-        'alpha': {
-            'min': 5,
-            'max': 255,
-            'gen': lambda: random.randint(20, 255)
-        },
         'xvelocity': {
             'min': 0.01,
             'max': 5,
@@ -50,12 +45,12 @@ class Invader(sge.dsp.Object):
         },
         'x_prob_change_dir': {
             'min': 0.01,
-            'max': 0.07,
+            'max': 0.06,
             'gen': lambda: random.uniform(0.0, 0.05)
         },
         'y_prob_change_dir': {
             'min': 0.0,
-            'max': 0.07,
+            'max': 0.06,
             'gen': lambda: random.uniform(0.0, 0.05)
         },
         'colors': ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink']
@@ -87,12 +82,10 @@ class Invader(sge.dsp.Object):
         # Asset musuh
         super(Invader, self).__init__(sge.game.width / 2., sge.game.height / 2. - 80,
                                       sprite=sge.gfx.Sprite(name='E_kraken'),
-                                      image_blend=sge.gfx.Color('white'),
                                       checks_collisions=False)
 
         self.xvelocity = self.attributes.get('xvelocity')
         self.yvelocity = self.attributes.get('yvelocity')
-        blend = int(self.attributes.get('alpha'))
         scale = self.attributes.get('scale')
         self.bbox_width = (self.sprite.width * scale)
         self.bbox_height = (self.sprite.height * scale)
@@ -182,7 +175,6 @@ class Player(sge.dsp.Object):
 
                 # Add the bullet object
                 sge.game.current_room.add(PlayerBullet(self))
-                sge.game.current_room.add(PlayerBullet(self))
                 if game.DOUBLE_SHOOT == True:
                     self.double = True
                     sge.game.current_room.add(PlayerBullet(self))
@@ -222,7 +214,6 @@ class PlayerBullet(sge.dsp.Object):
             killed = self.collision(other=Invader)
 
             if killed:
-                # We only kill the first colliding Invader
                 killed[0].destroy()
                 game.SCORES += + 1
                 if game.SCORES > game.HIGHSCORE:
