@@ -122,18 +122,21 @@ class InvadersGame(sge.dsp.Game):
             self.anim_sleep = None
             self.clock = Clock()
 
+    # fungsi menciptakan generasi baru
     def new_generation(self):
         # Menghasilkan Invaders baru dan mengurangi waktu generasi yang menjadi tantangan player
         global GENERATION_TIME
         inv = {o for o in self.current_room.objects if isinstance(o, objects.Invader)}
-        #The number of new individuals is determined by a box-cox
-        #transformation with lambda=0.6.
+        # The number of new individuals is determined by a box-cox
+        # transformation with lambda=0.6.
         newinv = int(((len(inv)**0.6)-1)/0.6)
+        # memanggil fungsi mating pada class evolution
         pairs = evolution.mating_pool_tournament(inv, newinv)
         if pairs:
+            #Menandai mana yang mating
             self.pairs = pairs
             self.pause(sprite=self.gensprite)
-            #Let's make it a bit harder
+            # Waktu untuk bergenerasi akan selalu berukurang hingga mencapai batas
             if GENERATION_TIME > MIN_GEN_TIME:
                 GENERATION_TIME -= 150
 
