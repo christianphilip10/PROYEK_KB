@@ -53,7 +53,7 @@ class Invader(sge.dsp.Object):
             'max': 0.06,
             'gen': lambda: random.uniform(0.0, 0.05)
         },
-        'colors': ['red', 'blue', 'green', 'yellow', 'pink', 'purple', 'pink']
+        'colors': ['red', 'blue', 'green', 'yellow', 'pink', 'purple', 'violet']
     }
 
     @staticmethod
@@ -132,6 +132,8 @@ class Player(sge.dsp.Object):
         self.lkey = "left"
         self.rkey = "right"
         self.double = False
+        self.triple = False
+        self.laser = False
         x = sge.game.width / 2.
         y = sge.game.height - game.PLAYER_YOFFSET
         # asset player
@@ -179,6 +181,16 @@ class Player(sge.dsp.Object):
                     self.double = True
                     sge.game.current_room.add(PlayerBullet(self))
                     self.double = False
+                if game.TRIPLE_SHOOT == True:
+                    self.double = True
+                    self.triple = True
+                    sge.game.current_room.add(PlayerBullet(self))
+                    self.double = False
+                    self.triple = False
+                if game.LASER_SHOT == True:
+                    self.laser = True
+                    sge.game.current_room.add(PlayerBullet(self))
+                    self.laser = False
 
 
 class PlayerBullet(sge.dsp.Object):
@@ -191,13 +203,29 @@ class PlayerBullet(sge.dsp.Object):
         # The bullet appears out of the spaceplane
         if game.DOUBLE_SHOOT == False:
             x = player.x + player.bbox_width / 2
-        else:
+        elif game.TRIPLE_SHOOT == True:
+            if player.double == True:
+                x = player.x + player.bbox_width
+                if player.triple == True:
+                    x = player.x + player.bbox_width / 2
+            else:
+                x = player.x
+        elif game.DOUBLE_SHOOT == True:
             if player.double == True:
                 x = player.x + player.bbox_width
             else:
                 x = player.x
+        if game.LASER_SHOT == True:
+            x = player.x + player.bbox_width / 2 - 0.5
+ 
+                
+                
 
-        ball_sprite = sge.gfx.Sprite(width=self.bullet_size, height=40, origin_x=4, origin_y=4)
+        ball_sprite = sge.gfx.Sprite(width=self.bullet_size, height=10, origin_x=4, origin_y=4)
+        if game.LASER_SHOT == True:
+            ball_sprite.width = 1
+            ball_sprite.height = 500
+            self.bullet_speed = 50
         ball_sprite.draw_rectangle(0, 0, ball_sprite.width, ball_sprite.height,
                                    fill=game.CITIUS_COLOR)
 
@@ -236,21 +264,31 @@ class PlayerBullet(sge.dsp.Object):
                 self.killed = False
 
         if game.SCORES % 20 == 0 and game.SCORES != 0:
-            if game.SCORES == 100:
-                self.bullet_size = self.bullet_size + 2
+            if game.SCORES >= 100:
+                self.bullet_size = self.bullet_size + 0.6
                 if self.killed == True:
                     self.upgrade_sound.play()
                 self.killed = False
             elif game.SCORES < 80:
-                self.bullet_size = self.bullet_size + 1
+                self.bullet_size = self.bullet_size + 0.3
                 game.UPGRADE = True
                 if self.killed == True:
                     self.upgrade_sound.play()
                 self.killed = False
 
-        if game.SCORES % 50 == 0:
-            if game.SCORES == 50:
+        if game.SCORES % 40 == 0:
+            if game.SCORES == 40:
                 game.DOUBLE_SHOOT = True
+                if self.killed == True:
+                    self.upgrade_sound.play()
+                self.killed = False
+            elif game.SCORES == 80:
+                game.TRIPLE_SHOOT = True
+                if self.killed == True:
+                    self.upgrade_sound.play()
+                self.killed = False
+            elif game.SCORES == 120:
+                game.LASER_SHOT = True
                 if self.killed == True:
                     self.upgrade_sound.play()
                 self.killed = False

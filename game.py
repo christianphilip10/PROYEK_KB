@@ -37,6 +37,8 @@ MAX_NINV = 100
 SCORES = 0
 UPGRADE = False
 DOUBLE_SHOOT = False
+TRIPLE_SHOOT = False
+LASER_SHOT = False
 
 #Membaca highscore terakhir
 HSSCORE = 'HighScore.txt'
@@ -185,9 +187,15 @@ class InvadersGame(sge.dsp.Game):
             # Program peluru diupdate ada di object.py
             # Menampilkan informasi teks ketika ada upgrade
             if SCORES % 10 == 0 and SCORES != 0:
-                if SCORES == 50:
+                if SCORES == 40:
                     self.project_text(self.hud_font, "Got Upgrade Double Bullet!!", 5, 65,
                                       anti_alias=False)
+                elif SCORES == 80:
+                    self.project_text(self.hud_font, "Got Upgrade Triple Bullet!!", 5, 65,
+                                  anti_alias=False)
+                elif SCORES == 120:
+                    self.project_text(self.hud_font, "Got Upgrade LASER SHOT!!", 5, 65,
+                                  anti_alias=False)
                 elif SCORES < 70:
                     self.project_text(self.hud_font, "Got Upgrade!!", 5, 65,
                                   anti_alias=False)
