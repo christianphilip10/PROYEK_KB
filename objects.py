@@ -134,6 +134,7 @@ class Player(sge.dsp.Object):
         self.double = False
         self.triple = False
         self.laser = False
+        self.double_laser = False
         x = sge.game.width / 2.
         y = sge.game.height - game.PLAYER_YOFFSET
         # asset player
@@ -191,6 +192,10 @@ class Player(sge.dsp.Object):
                     self.laser = True
                     sge.game.current_room.add(PlayerBullet(self))
                     self.laser = False
+                if game.DOUBLE_LASER_SHOT == True:
+                    self.double_laser = True
+                    sge.game.current_room.add(PlayerBullet(self))
+                    self.double_laser = False
 
 
 class PlayerBullet(sge.dsp.Object):
@@ -217,6 +222,12 @@ class PlayerBullet(sge.dsp.Object):
                 x = player.x
         if game.LASER_SHOT == True:
             x = player.x + player.bbox_width / 2 - 0.5
+        elif game.DOUBLE_LASER_SHOT == True:
+            if player.double_laser == True:
+                x = player.x + player.bbox_width - 2
+            else:
+                x = player.x + 10
+        
  
                 
                 
@@ -226,6 +237,11 @@ class PlayerBullet(sge.dsp.Object):
             ball_sprite.width = 1
             ball_sprite.height = 500
             self.bullet_speed = 50
+        if game.DOUBLE_LASER_SHOT == True:
+            ball_sprite.width = 1
+            ball_sprite.height = 500
+            self.bullet_speed = 50
+        
         ball_sprite.draw_rectangle(0, 0, ball_sprite.width, ball_sprite.height,
                                    fill=game.CITIUS_COLOR)
 
@@ -289,6 +305,11 @@ class PlayerBullet(sge.dsp.Object):
                 self.killed = False
             elif game.SCORES == 120:
                 game.LASER_SHOT = True
+                if self.killed == True:
+                    self.upgrade_sound.play()
+                self.killed = False
+            elif game.SCORES == 160:
+                game.DOUBLE_LASER_SHOT = True
                 if self.killed == True:
                     self.upgrade_sound.play()
                 self.killed = False

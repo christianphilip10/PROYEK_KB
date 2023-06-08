@@ -13,6 +13,8 @@ def run_game():
         game.InvadersGame()
     game.DOUBLE_SHOOT = False
     game.TRIPLE_SHOOT = False
+    game.LASER_SHOT = False
+    game.DOUBLE_LASER_SHOT = False
     # Load backgrounds pada aset bernama final_space.jpg
     wall_sprite = sge.gfx.Sprite(name='final_space')
     layers = [sge.gfx.BackgroundLayer(wall_sprite, 0, 0)]

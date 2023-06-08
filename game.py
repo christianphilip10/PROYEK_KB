@@ -38,6 +38,7 @@ UPGRADE = False
 DOUBLE_SHOOT = False
 TRIPLE_SHOOT = False
 LASER_SHOT = False
+DOUBLE_LASER_SHOT = False
 
 #Membaca highscore terakhir
 HSSCORE = 'HighScore.txt'
@@ -194,6 +195,9 @@ class InvadersGame(sge.dsp.Game):
                                   anti_alias=False)
                 elif SCORES == 120:
                     self.project_text(self.hud_font, "Got Upgrade LASER SHOT!!", 5, 65,
+                                  anti_alias=False)
+                elif SCORES == 160:
+                    self.project_text(self.hud_font, "Got Upgrade DOUBLE LASER SHOT!!", 5, 65,
                                   anti_alias=False)
                 elif SCORES < 70:
                     self.project_text(self.hud_font, "Got Upgrade!!", 5, 65,
