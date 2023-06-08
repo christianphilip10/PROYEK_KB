@@ -173,6 +173,7 @@ class InvadersGame(sge.dsp.Game):
             start_hover = False
             exit_hover = False
 
+    # fungsi selama game berjalan
     def event_step(self, time_passed, delta_mult):
 
         if invaders.menu == True:
@@ -219,12 +220,11 @@ class InvadersGame(sge.dsp.Game):
 
     #fungsi untuk menerima inputan keyboard dari user
     def event_key_press(self, key, char):
-        # Key untuk melakukan Screenshot
-        if key == 'f8':
-            sge.gfx.Sprite.from_screenshot().save(time.strftime('%Y-%m-%d_%H%M%S')+'.jpg')
         # Key untuk melakukan Fullscreen
-        elif key == 'f11':
+        if key == 'f11':
             self.fullscreen = not self.fullscreen
+        elif self.fullscreen and key == 'f11':
+            self.fullscreen = self.fullscreen
         # Key untuk keluar dari permainan
         elif key == 'escape':
             self.event_close()
@@ -232,11 +232,10 @@ class InvadersGame(sge.dsp.Game):
         elif not self.game_over and key in ('p', 'enter'):
             self.pause()
 
-
     def event_close(self):
         self.end()
 
-    #Fungsi untuk pause sementara
+    #Fungsi yang akan berjalan selama pause sementara
     def event_paused_step(self, time_passed, delta_mult):
         self.show_hud()
         if self.pairs:
@@ -307,18 +306,6 @@ class InvadersGame(sge.dsp.Game):
                     self.end()
                 quit_hover = False
                 continue_hover = False
-
-
-    def event_paused_key_press(self, key, char):
-        if key == 'escape':
-            # Jika tombol escape ditekan, maka game berhenti
-            self.event_close()
-        else:
-            if self.pairs is None:
-                self.unpause()
-
-    def event_paused_close(self):
-        self.event_close()
 
 
 class GameRoom(sge.dsp.Room):
