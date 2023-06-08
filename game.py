@@ -19,8 +19,8 @@ WALL_YOFFSET = 70
 WALL_HEIGHT = 2
 
 # Jumlah waktu untuk membuat generasi, yang akan berkurang setiap generasinya hingga mencapai limit
-GENERATION_TIME = 5000
-MIN_GEN_TIME = 2000
+GENERATION_TIME = 3000
+MIN_GEN_TIME = 1500
 
 # Warna Dasar untuk menandai mating
 CITIUS_COLOR = sge.gfx.Color('#EF7D10')
