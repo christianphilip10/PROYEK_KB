@@ -41,6 +41,8 @@ HSSCORE = 'HighScore.txt'
 with open(HSSCORE) as file:
     HIGHSCORE = int(file.read())
 
+pygame.init()
+
 class InvadersGame(sge.dsp.Game):
     """
     Kelas utama untuk permainan. Ini mengatur tindakan global yang mempengaruhi semua
@@ -123,49 +125,85 @@ class InvadersGame(sge.dsp.Game):
             if GENERATION_TIME > MIN_GEN_TIME:
                 GENERATION_TIME -= 150
 
+    # Membuat tampilan Main Menu ketika gamenya dirun
+    def show_main_menu(self):
+        sge.game.mouse.visible = True
+        mouse = pygame.mouse.get_pos()
+        start_hover = False
+        exit_hover = False
+        self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Kraken Lore', RESX / 2, RESY / 2 - 140,
+                          halign='center', valign='center')
+
+        if 470 > mouse[0] > 438 and 315 > mouse[1] > 291:
+            color_start = gfx.Color("gray")
+            start_hover = True
+        else:
+            color_start = gfx.Color("white")
+        if 487 > mouse[0] > 456 and 387 > mouse[1] > 365:
+            color_exit = gfx.Color("gray")
+            exit_hover = True
+        else:
+            color_exit = gfx.Color("white")
+
+        self.project_text(self.hud_font, "Start", 445, 290, anti_alias=False, color=color_start)
+        self.project_text(self.hud_font, "Exit", 455, 365, anti_alias=False, color=color_exit)
+
+        for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONUP and start_hover:
+                invaders.run_game()
+            elif event.type == pygame.MOUSEBUTTONUP and exit_hover:
+                self.end()
+            start_hover = False
+            exit_hover = False
+
+        pygame.display.update()
+
     def event_step(self, time_passed, delta_mult):
-        sge.game.mouse.visible = False
-        #update highscore
-        if SCORES > HIGHSCORE:
-            with open('HighScore.txt', 'w') as f:
-                f.write(str(SCORES))
+        if self.pause:
+            self.show_main_menu()
+        else:
+            sge.game.mouse.visible = False
+            #update highscore
+            if SCORES > HIGHSCORE:
+                with open('HighScore.txt', 'w') as f:
+                    f.write(str(SCORES))
 
-        # Jika kondisi terpenuhi maka tembakan pelurunya akan terupdate
-        # Program peluru diupdate ada di object.py
+            # Jika kondisi terpenuhi maka tembakan pelurunya akan terupdate
+            # Program peluru diupdate ada di object.py
 
-        if SCORES % 10 == 0 and SCORES != 0:
-            if SCORES == 50:
-                self.project_text(self.hud_font, "Got Upgrade Double Bullet!!", 5, 65,
+            if SCORES % 10 == 0 and SCORES != 0:
+                if SCORES == 50:
+                    self.project_text(self.hud_font, "Got Upgrade Double Bullet!!", 5, 65,
+                                      anti_alias=False)
+                elif SCORES < 70:
+                    self.project_text(self.hud_font, "Got Upgrade!!", 5, 65,
                                   anti_alias=False)
-            elif SCORES < 70:
-                self.project_text(self.hud_font, "Got Upgrade!!", 5, 65,
-                              anti_alias=False)
-            elif SCORES == 100:
-                self.project_text(self.hud_font, "Got Upgrade!!", 5, 65,
-                                  anti_alias=False)
+                elif SCORES == 100:
+                    self.project_text(self.hud_font, "Got Upgrade!!", 5, 65,
+                                      anti_alias=False)
 
-        num_invaders = sum(1 for o in
-                   self.current_room.objects if isinstance(o, objects.Invader))
-        self.show_hud()
+            num_invaders = sum(1 for o in
+                       self.current_room.objects if isinstance(o, objects.Invader))
+            self.show_hud()
 
-        # Game akan selesai jika jumlah Kraken melebihi batas maksimal Kraken (dibatasi 100)
-        self.game_over = num_invaders >= MAX_NINV
-        if not self.game_over:
-            self.last_gen += time_passed
+            # Game akan selesai jika jumlah Kraken melebihi batas maksimal Kraken (dibatasi 100)
+            self.game_over = num_invaders >= MAX_NINV
+            if not self.game_over:
+                self.last_gen += time_passed
 
-        # jika sudah melewati ambang batas, saatnya berkembang biak lagi
-        if self.last_gen >= GENERATION_TIME:
-            self.new_generation()
+            # jika sudah melewati ambang batas, saatnya berkembang biak lagi
+            if self.last_gen >= GENERATION_TIME:
+                self.new_generation()
 
-        # Kondisi ketika jumlah Kraken saat ini dibawah batas minimal Kraken (batas min = 4)
-        # Kita tidak bisa menunggu mereka sampai selesai berkembang biak
-        elif num_invaders <= MIN_NINV:
-            for inv in (o for o in self.current_room.objects
-                                            if isinstance(o, objects.Invader)):
-                self.project_circle(inv.x+inv.bbox_width/2,
-                                    inv.y+inv.bbox_height/2,
-                                    inv.bbox_width, outline=IMMUNIT_COLOR,
-                                    outline_thickness=2)
+            # Kondisi ketika jumlah Kraken saat ini dibawah batas minimal Kraken (batas min = 4)
+            # Kita tidak bisa menunggu mereka sampai selesai berkembang biak
+            elif num_invaders <= MIN_NINV:
+                for inv in (o for o in self.current_room.objects
+                                                if isinstance(o, objects.Invader)):
+                    self.project_circle(inv.x+inv.bbox_width/2,
+                                        inv.y+inv.bbox_height/2,
+                                        inv.bbox_width, outline=IMMUNIT_COLOR,
+                                        outline_thickness=2)
 
     def event_key_press(self, key, char):
         # Key untuk melakukan Screenshot
