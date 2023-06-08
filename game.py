@@ -58,7 +58,7 @@ class InvadersGame(sge.dsp.Game):
         self.gensprite = sge.gfx.Sprite(width=RESX, height=RESY, origin_x=0, origin_y=0)
         self.scoresprite = sge.gfx.Sprite(width=320, height=120, origin_x=100, origin_y=100)
 
-        self.hud_font = sge.gfx.Font('minecraftia.ttf', size=20)
+        self.hud_font = sge.gfx.Font('INVASION2000.ttf', size=20)
         self.pairs = None
         self.score = 0
         self.anim_sleep = None
@@ -86,11 +86,11 @@ class InvadersGame(sge.dsp.Game):
                 with open('HighScore.txt', 'w') as f:
                     f.write(str(SCORES))
 
-            self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Game\nOver', RESX/2, RESY/2 - 140, halign='center', valign='center')
-            self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'SCORE: ' + str(SCORES), RESX / 2, RESY / 2 + 100,
+            self.project_text(sge.gfx.Font('INVASION2000.ttf', size=70), 'Game\nOver', RESX/2, RESY/2 - 140, halign='center', valign='center')
+            self.project_text(sge.gfx.Font('INVASION2000.ttf', size=30), 'SCORE: ' + str(SCORES), RESX / 2, RESY / 2 + 100,
                               halign='center', valign='center')
            
-            self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'HIGH SCORE: ' + str(HIGHSCORE), RESX / 2, RESY / 2 + 150,
+            self.project_text(sge.gfx.Font('INVASION2000.ttf', size=30), 'HIGH SCORE: ' + str(HIGHSCORE), RESX / 2, RESY / 2 + 150,
                               halign='center', valign='center')
 
 
@@ -144,7 +144,7 @@ class InvadersGame(sge.dsp.Game):
         # print(mouse)
         start_hover = False
         exit_hover = False
-        self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Kraken Lore', RESX / 2, RESY / 2 - 140,
+        self.project_text(sge.gfx.Font('INVASION2000.ttf', size=70), 'Kraken Lore', RESX / 2, RESY / 2 - 140,
                           halign='center', valign='center')
 
         if 507 > mouse[0] > 452 and 312 > mouse[1] > 300:
