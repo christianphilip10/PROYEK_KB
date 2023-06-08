@@ -1,4 +1,3 @@
-
 import sge
 from sge import gfx
 import objects

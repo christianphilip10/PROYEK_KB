@@ -53,15 +53,8 @@ def mating_pool_tournament(population, num_of_pairs=10, evaluator=attrgetter('fi
 # Beberapa individu dipilih secara acak dari populasi dan dibandingkan berdasarkan fitness mereka.
 # Individu dengan fitness tertinggi dipilih sebagai hasil turnamen.
 def tournament(population, evaluator, k=2):
-    global sample
-    # Jika banyaknya populasi leibh kecil dari k
-    if len(population) < k:
-        # sample adalah populasi
-        sample = population
-    # Jika populasi lebih dari k
-    else:
-        # maka sample ngampil 2 populasi random
-        random.sample(population, k)
+    # sample adalah populasi
+    # Jika populasi lebih dari k = maka sample ngampil 2 populasi random
+    # Jika banyaknya populasi leibh kecil dari k maka populasi tersebut masuk kedalam sample
+    sample = population if len(population) < k else random.sample(population, k)
     return max(sample, key=evaluator)
-
-
