@@ -28,10 +28,7 @@ def recombinate(pairs, gene_props, mutation_probability=0.1, effect=0.5):
                     max_v = gene_props[gen]['max']
                     v = children_genes[gen]
                     rv = random.choice([-1, 1]) * random.uniform(0, effect * (max_v - min_v))
-                    # new_v_gauss = bound_value(random.gauss(v, (max_v - min_v) * effect), min_v, max_v)
                     new_v = bound_value(v + rv, min_v, max_v)
-                    # print '----- Mutating ' + gen + ' - RV: ' + str(rv) + ' - V: ' + str(v) + ' - New: ' + str(new_v) + ' - Gaussian: ' + str(new_v_gauss)
-                    # rv = random.uniform(children_genes[gen], (max_v - min_v)*0.1)
                     children_genes[gen] = new_v
         offspring.append(children_genes)
     return offspring
