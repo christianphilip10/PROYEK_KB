@@ -77,12 +77,19 @@ class InvadersGame(sge.dsp.Game):
             mouse = pygame.mouse.get_pos()
             quit_hover = False
             retry_hover = False
+            # update highscore
+            if SCORES >= HIGHSCORE:
+                with open('HighScore.txt', 'w') as f:
+                    f.write(str(SCORES))
+
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Game\nOver', RESX/2, RESY/2 - 140, halign='center', valign='center')
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'SCORE: ' + str(SCORES), RESX / 2, RESY / 2 + 100,
                               halign='center', valign='center')
            
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'HIGH SCORE: ' + str(HIGHSCORE), RESX / 2, RESY / 2 + 150,
                               halign='center', valign='center')
+
+
             if 685 > mouse[0] > 615 and 500 > mouse[1] > 484:
                 color_pause_quit = gfx.Color("gray")
                 quit_hover = True
@@ -160,14 +167,13 @@ class InvadersGame(sge.dsp.Game):
             exit_hover = False
 
     def event_step(self, time_passed, delta_mult):
+
+
         if invaders.menu == True:
             self.show_main_menu()
         elif invaders.menu == False:
             sge.game.mouse.visible = False
-            #update highscore
-            if SCORES > HIGHSCORE:
-                with open('HighScore.txt', 'w') as f:
-                    f.write(str(SCORES))
+
 
             # Jika kondisi terpenuhi maka tembakan pelurunya akan terupdate
             # Program peluru diupdate ada di object.py
