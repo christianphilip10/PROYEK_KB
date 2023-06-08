@@ -7,36 +7,38 @@ import time
 import pygame
 from pygame.time import Clock
 import invaders
-#tesgithub
-#Resolution constants
+
+# Deklarasi Variable Setting
+# Resolusi Layar
 RESX = 960
 RESY = 540
 
-# Objects position
+# Posisi Object
 PLAYER_YOFFSET = 50
 PLAYER_SPEED = 4
 WALL_YOFFSET = 70
 WALL_HEIGHT = 2
 
-# Number of ms between generations (it is reduced with each generation until a lower limit)
+# Jumlah waktu untuk membuat generasi, yang akan berkurang setiap generasinya hingga mencapai limit
 GENERATION_TIME = 5000
 MIN_GEN_TIME = 2000
 
-# Citius color
+# Warna Dasar untuk menandai mating
 CITIUS_COLOR = sge.gfx.Color('#EF7D10')
 IMMUNIT_COLOR = sge.gfx.Color('#15AFF0')
 
-#Minimum number of invaders that must survive
+#Jumlah minimal Kraken dalam permainan
 MIN_NINV = 4
 
-#Number of invaders to lose the game
+#Jumlah maksimal Kraken dalam permainan dan sebagai penanda game over
 MAX_NINV = 100
 
+#Setting awal score dan upgrade
 SCORES = 0
 UPGRADE = False
 DOUBLE_SHOOT = False
 
-#highscore
+#Membaca highscore terakhir
 HSSCORE = 'HighScore.txt'
 with open(HSSCORE) as file:
     HIGHSCORE = int(file.read())
@@ -64,6 +66,7 @@ class InvadersGame(sge.dsp.Game):
         self.game_over = False
         self.clock = Clock()
 
+    #Fungsi untuk menampilkan text atau hud selama permainan
     def show_hud(self):
         self.clock.tick()
         # Menampilkan Score yang didapat dan banyaknya Kraken yang bermunculan
@@ -72,6 +75,7 @@ class InvadersGame(sge.dsp.Game):
 
         self.project_text(self.hud_font, hud_string.format(HIGHSCORE, num_invaders, SCORES), 5, 5, anti_alias=False)
 
+        #Jika gameover, maka menampilkan tampilan layar gameover
         if self.game_over:
             sge.game.mouse.visible = True
             mouse = pygame.mouse.get_pos()
@@ -168,16 +172,14 @@ class InvadersGame(sge.dsp.Game):
 
     def event_step(self, time_passed, delta_mult):
 
-
         if invaders.menu == True:
             self.show_main_menu()
         elif invaders.menu == False:
             sge.game.mouse.visible = False
 
-
             # Jika kondisi terpenuhi maka tembakan pelurunya akan terupdate
             # Program peluru diupdate ada di object.py
-
+            # Menampilkan informasi teks ketika ada upgrade
             if SCORES % 10 == 0 and SCORES != 0:
                 if SCORES == 50:
                     self.project_text(self.hud_font, "Got Upgrade Double Bullet!!", 5, 65,
@@ -212,6 +214,7 @@ class InvadersGame(sge.dsp.Game):
                                         inv.bbox_width, outline=IMMUNIT_COLOR,
                                         outline_thickness=2)
 
+    #fungsi untuk menerima inputan keyboard dari user
     def event_key_press(self, key, char):
         # Key untuk melakukan Screenshot
         if key == 'f8':
@@ -230,7 +233,7 @@ class InvadersGame(sge.dsp.Game):
     def event_close(self):
         self.end()
 
-
+    #Fungsi untuk pause sementara
     def event_paused_step(self, time_passed, delta_mult):
         self.show_hud()
         if self.pairs:
