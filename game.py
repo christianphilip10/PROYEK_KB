@@ -110,6 +110,7 @@ class InvadersGame(sge.dsp.Game):
                 retry_hover = False
             self.anim_sleep = None
             self.clock = Clock()
+
     def new_generation(self):
         # Menghasilkan Invaders baru dan mengurangi waktu generasi yang menjadi tantangan player
         global GENERATION_TIME
@@ -129,17 +130,18 @@ class InvadersGame(sge.dsp.Game):
     def show_main_menu(self):
         sge.game.mouse.visible = True
         mouse = pygame.mouse.get_pos()
+        # print(mouse)
         start_hover = False
         exit_hover = False
         self.project_text(sge.gfx.Font('minecraftia.ttf', size=70), 'Kraken Lore', RESX / 2, RESY / 2 - 140,
                           halign='center', valign='center')
 
-        if 470 > mouse[0] > 438 and 315 > mouse[1] > 291:
+        if 507 > mouse[0] > 452 and 312 > mouse[1] > 300:
             color_start = gfx.Color("gray")
             start_hover = True
         else:
             color_start = gfx.Color("white")
-        if 487 > mouse[0] > 456 and 387 > mouse[1] > 365:
+        if 496 > mouse[0] > 456 and 392 > mouse[1] > 370:
             color_exit = gfx.Color("gray")
             exit_hover = True
         else:
@@ -150,18 +152,17 @@ class InvadersGame(sge.dsp.Game):
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP and start_hover:
+                invaders.menu = False
                 invaders.run_game()
             elif event.type == pygame.MOUSEBUTTONUP and exit_hover:
                 self.end()
             start_hover = False
             exit_hover = False
 
-        pygame.display.update()
-
     def event_step(self, time_passed, delta_mult):
-        if self.pause:
+        if invaders.menu == True:
             self.show_main_menu()
-        else:
+        elif invaders.menu == False:
             sge.game.mouse.visible = False
             #update highscore
             if SCORES > HIGHSCORE:
