@@ -59,7 +59,7 @@ class InvadersGame(sge.dsp.Game):
 
         self.hud_font = sge.gfx.Font('INVASION2000.ttf', size=20)
         self.pairs = None
-        self.score = 0
+        self.matingSessionCount = 0
         self.anim_sleep = None
         self.last_gen = 0
         self.game_over = False
@@ -266,7 +266,7 @@ class InvadersGame(sge.dsp.Game):
                 self.anim_sleep = (1.0 if len(self.pairs) == 0
                                        else 0 if len(self.pairs) > 50
                                            else min(1.0, 3.0/len(self.pairs)))
-                if self.score > 4:
+                if self.matingSessionCount > 4:
                     self.anim_sleep = 0
             else:
                 time.sleep(self.anim_sleep)
@@ -274,7 +274,7 @@ class InvadersGame(sge.dsp.Game):
             # Crossover selesai, game dapat berjalan kembali
             time.sleep(self.anim_sleep)
             self.pairs = self.anim_sleep = None
-            self.score += 1
+            self.matingSessionCount += 1
             self.last_gen = 0
             self.unpause()
         else:
