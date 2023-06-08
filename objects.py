@@ -258,7 +258,7 @@ class PlayerBullet(sge.dsp.Object):
                     self.upgrade_sound.play()
                 self.killed = False
 
-        if game.SCORES % 50 == 0 and game.SCORES != 0:
+        if game.SCORES % 50 == 0:
             if game.SCORES == 50:
                 game.DOUBLE_SHOOT = True
                 if self.killed == True:

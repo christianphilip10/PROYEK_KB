@@ -81,8 +81,6 @@ class InvadersGame(sge.dsp.Game):
            
             self.project_text(sge.gfx.Font('minecraftia.ttf', size=30), 'HIGH SCORE: ' + str(HIGHSCORE), RESX / 2, RESY / 2 + 150,
                               halign='center', valign='center')
-
-
             if 685 > mouse[0] > 615 and 500 > mouse[1] > 484:
                 color_pause_quit = gfx.Color("gray")
                 quit_hover = True
@@ -108,7 +106,8 @@ class InvadersGame(sge.dsp.Game):
                     self.end()
                 quit_hover = False
                 retry_hover = False
-
+            self.anim_sleep = None
+            self.clock = Clock()
     def new_generation(self):
         # Menghasilkan Invaders baru dan mengurangi waktu generasi yang menjadi tantangan player
         global GENERATION_TIME
