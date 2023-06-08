@@ -23,11 +23,11 @@ def run_game():
         # Menggenerate warna objek
         # Kraken nantinya akan menghasil kan berbagai macam warna random yang sudah dibuat
         colors = [(255, 0, 0),  # Red
-                  (0, 0, 255),  # Blue
-                  (0, 255, 0),  # Green
-                  (255, 255, 0),  # Yellow
-                  (255, 165, 0),  # Orange
-                  (128, 0, 128)]  # Purple
+                (0, 0, 255),  # Blue
+                (0, 255, 0),  # Green
+                (255, 255, 0),  # Yellow
+                (255, 165, 255),  # Pink
+                (128, 0, 128)]  # Purple
         invaders = [objects.Invader(colors=colors.pop()) for _ in range(6)]
         player = objects.Player()
 

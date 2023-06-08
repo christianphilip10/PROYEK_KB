@@ -53,7 +53,7 @@ class Invader(sge.dsp.Object):
             'max': 0.06,
             'gen': lambda: random.uniform(0.0, 0.05)
         },
-        'colors': ['red', 'blue', 'green', 'yellow', 'orange', 'purple', 'pink']
+        'colors': ['red', 'blue', 'green', 'yellow', 'pink', 'purple', 'pink']
     }
 
     @staticmethod
@@ -218,7 +218,6 @@ class PlayerBullet(sge.dsp.Object):
                 game.SCORES += + 1
                 if game.SCORES > game.HIGHSCORE:
                     game.HIGHSCORE += 1
-
 
                 DESTROY_SOUND.play()
                 self.destroy()
