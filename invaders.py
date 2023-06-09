@@ -10,7 +10,7 @@ def run_game():
         game.SCORES = 0
     # Create Game object
     if (retry == False):
-        game.InvadersGame()
+        game.SpaceGame()
     game.DOUBLE_SHOOT = False
     game.TRIPLE_SHOOT = False
     game.LASER_SHOT = False
