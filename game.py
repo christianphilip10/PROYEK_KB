@@ -95,7 +95,7 @@ class InvadersGame(sge.dsp.Game):
             self.project_text(sge.gfx.Font('INVASION2000.ttf', size=30), 'HIGH SCORE: ' + str(HIGHSCORE), RESX / 2, RESY / 2 + 150,
                               halign='center', valign='center')
 
-
+            # Hover tombol di game over menu
             if 685 > mouse[0] > 615 and 500 > mouse[1] > 484:
                 color_pause_quit = gfx.Color("gray")
                 quit_hover = True
@@ -111,6 +111,7 @@ class InvadersGame(sge.dsp.Game):
                               anti_alias=False, color=color_pause_retry)
             self.project_text(self.hud_font, "Exit", 614, 480,
                               anti_alias=False , color=color_pause_quit)
+            # Ketika tombol ditekan pada game over menu
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONUP and retry_hover == True:
                     invaders.retry = True
@@ -134,8 +135,9 @@ class InvadersGame(sge.dsp.Game):
         # memanggil fungsi mating pada class evolution
         pairs = evolution.mating_pool_tournament(inv, newinv)
         if pairs:
-            #Menandai mana yang mating
+            # Menandai mana yang mating
             self.pairs = pairs
+            # Menjalankan fungsi dalam pause
             self.pause(sprite=self.gensprite)
             # Waktu untuk bergenerasi akan selalu berukurang hingga mencapai batas
             if GENERATION_TIME > MIN_GEN_TIME:
@@ -151,6 +153,7 @@ class InvadersGame(sge.dsp.Game):
         self.project_text(sge.gfx.Font('INVASION2000.ttf', size=70), 'Kraken Lore', RESX / 2, RESY / 2 - 140,
                           halign='center', valign='center')
 
+        # Hover tombol di main menu
         if 507 > mouse[0] > 452 and 312 > mouse[1] > 300:
             color_start = gfx.Color("gray")
             start_hover = True
@@ -165,6 +168,7 @@ class InvadersGame(sge.dsp.Game):
         self.project_text(self.hud_font, "Start", 445, 290, anti_alias=False, color=color_start)
         self.project_text(self.hud_font, "Exit", 455, 365, anti_alias=False, color=color_exit)
 
+        # Ketika tombol di main menu ditekan
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP and start_hover:
                 invaders.menu = False
@@ -176,7 +180,6 @@ class InvadersGame(sge.dsp.Game):
 
     # fungsi selama game berjalan
     def event_step(self, time_passed, delta_mult):
-
         if invaders.menu == True:
             self.show_main_menu()
         elif invaders.menu == False:
@@ -219,7 +222,7 @@ class InvadersGame(sge.dsp.Game):
                 self.new_generation()
 
             # Kondisi ketika jumlah Kraken saat ini dibawah batas minimal Kraken (batas min = 4)
-            # Kita tidak bisa menunggu mereka sampai selesai berkembang biak
+            # Maka player tidak dapat menembak, sehingga kraken tidak bisa mati total
             elif num_invaders <= MIN_NINV:
                 for inv in (o for o in self.current_room.objects
                                                 if isinstance(o, objects.Invader)):
@@ -241,13 +244,14 @@ class InvadersGame(sge.dsp.Game):
         # Key untuk melakukan pause game
         elif not self.game_over and key in ('p', 'enter'):
             self.pause()
-
+    #untuk mengakhiri permainan dan seluruh event didalamnya
     def event_close(self):
         self.end()
 
-    #Fungsi yang akan berjalan selama pause sementara
+    #Fungsi yang akan berjalan selama pause
     def event_paused_step(self, time_passed, delta_mult):
         self.show_hud()
+        # Jika ada pairs
         if self.pairs:
             # Menggambar bagaimana operasi crossover terjadi
             # Operasi Crossover / perkawinan akan berhenti selama 5 detik
@@ -277,10 +281,12 @@ class InvadersGame(sge.dsp.Game):
                 self.anim_sleep = (1.0 if len(self.pairs) == 0
                                        else 0 if len(self.pairs) > 50
                                            else min(1.0, 3.0/len(self.pairs)))
+                # Jika sudah 4 kali matingsessiong, maka waktu pausenya jadi 0
                 if self.matingSessionCount > 4:
                     self.anim_sleep = 0
             else:
                 time.sleep(self.anim_sleep)
+        # Jika tidak ada pairs
         elif self.pairs is not None:
             # Crossover selesai, game dapat berjalan kembali
             time.sleep(self.anim_sleep)
@@ -288,12 +294,15 @@ class InvadersGame(sge.dsp.Game):
             self.matingSessionCount += 1
             self.last_gen = 0
             self.unpause()
+
+        # Untuk pause menu
         else:
             quit_hover = False
             continue_hover = False
             sge.game.mouse.visible = True
             mouse = pygame.mouse.get_pos()
 
+            #Hover tombol di pause menu
             if 512 > mouse[0] > 468 and 413 > mouse[1] > 395:
                 color_pause_quit = gfx.Color("gray")
                 quit_hover = True
@@ -309,6 +318,7 @@ class InvadersGame(sge.dsp.Game):
                               anti_alias=False, color=color_pause_continue)
             self.project_text(self.hud_font, "Exit", 467, 390,
                               anti_alias=False , color=color_pause_quit)
+            #Ketika tombol di pause menu di tekan
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONUP and continue_hover == True:
                     self.unpause()

@@ -227,10 +227,6 @@ class PlayerBullet(sge.dsp.Object):
                 x = player.x + player.bbox_width - 2
             else:
                 x = player.x + 10
-        
- 
-                
-                
 
         ball_sprite = sge.gfx.Sprite(width=self.bullet_size, height=10, origin_x=4, origin_y=4)
         if game.LASER_SHOT == True:
