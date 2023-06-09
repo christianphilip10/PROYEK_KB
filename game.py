@@ -5,7 +5,7 @@ import evolution
 import time
 import pygame
 from pygame.time import Clock
-import invaders
+import krakens
 
 # Deklarasi Variable Setting
 # Resolusi Layar
@@ -27,10 +27,10 @@ CITIUS_COLOR = sge.gfx.Color('#EF7D10')
 IMMUNIT_COLOR = sge.gfx.Color('#15AFF0')
 
 #Jumlah minimal Kraken dalam permainan
-MIN_NINV = 4
+MIN_NKRAKENS = 4
 
 #Jumlah maksimal Kraken dalam permainan dan sebagai penanda game over
-MAX_NINV = 100
+MAX_NKRAKEN = 100
 
 #Setting awal score dan upgrade
 SCORES = 0
@@ -47,15 +47,15 @@ with open(HSSCORE) as file:
 
 pygame.init()
 
-class InvadersGame(sge.dsp.Game):
+class SpaceGame(sge.dsp.Game):
     """
     Kelas utama untuk permainan. Ini mengatur tindakan global yang mempengaruhi semua
     objek dalam permainan.
     """
 
     def __init__(self):
-        # Menginisialisasi InvadersGame baru, dengan semua parameter diatur
-        super(InvadersGame, self).__init__(width=RESX, height=RESY, fps=120, collision_events_enabled=False,
+        # Menginisialisasi SpaceGame baru, dengan semua parameter diatur
+        super(SpaceGame, self).__init__(width=RESX, height=RESY, fps=120, collision_events_enabled=False,
                                            window_text="Kraken Lore")
         self.gensprite = sge.gfx.Sprite(width=RESX, height=RESY, origin_x=0, origin_y=0)
         self.scoresprite = sge.gfx.Sprite(width=320, height=120, origin_x=100, origin_y=100)
@@ -73,9 +73,9 @@ class InvadersGame(sge.dsp.Game):
         self.clock.tick()
         # Menampilkan Score yang didapat dan banyaknya Kraken yang bermunculan
         hud_string = 'HIGHSCORE: {0:03d}  KRAKEN: {1:03d}\nSCORE: {2:03d}'
-        num_invaders = sum(1 for o in self.current_room.objects if isinstance(o, objects.Invader))
+        num_krakens = sum(1 for o in self.current_room.objects if isinstance(o, objects.Kraken))
 
-        self.project_text(self.hud_font, hud_string.format(HIGHSCORE, num_invaders, SCORES), 5, 5, anti_alias=False)
+        self.project_text(self.hud_font, hud_string.format(HIGHSCORE, num_krakens, SCORES), 5, 5, anti_alias=False)
 
         #Jika gameover, maka menampilkan tampilan layar gameover
         if self.game_over:
@@ -113,8 +113,8 @@ class InvadersGame(sge.dsp.Game):
                               anti_alias=False , color=color_pause_quit)
             for event in pygame.event.get():
                 if event.type == pygame.MOUSEBUTTONUP and retry_hover == True:
-                    invaders.retry = True
-                    invaders.run_game()
+                    krakens.retry = True
+                    krakens.run_game()
                     self.end()
 
                 elif event.type == pygame.MOUSEBUTTONUP and quit_hover == True:
@@ -126,14 +126,14 @@ class InvadersGame(sge.dsp.Game):
 
     # fungsi menciptakan generasi baru
     def new_generation(self):
-        # Menghasilkan Invaders baru dan mengurangi waktu generasi yang menjadi tantangan player
+        # Menghasilkan Krakens baru dan mengurangi waktu generasi yang menjadi tantangan player
         global GENERATION_TIME
-        inv = {o for o in self.current_room.objects if isinstance(o, objects.Invader)}
+        kraken = {o for o in self.current_room.objects if isinstance(o, objects.Kraken)}
         # The number of new individuals is determined by a box-cox
         # transformation with lambda=0.6.
-        newinv = int(((len(inv)**0.6)-1)/0.6)
+        newkraken = int(((len(kraken)**0.6)-1)/0.6)
         # memanggil fungsi mating pada class evolution
-        pairs = evolution.mating_pool_tournament(inv, newinv)
+        pairs = evolution.mating_pool_tournament(kraken, newkraken)
         if pairs:
             #Menandai mana yang mating
             self.pairs = pairs
@@ -168,8 +168,8 @@ class InvadersGame(sge.dsp.Game):
 
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONUP and start_hover:
-                invaders.menu = False
-                invaders.run_game()
+                krakens.menu = False
+                krakens.run_game()
             elif event.type == pygame.MOUSEBUTTONUP and exit_hover:
                 self.end()
             start_hover = False
@@ -178,9 +178,9 @@ class InvadersGame(sge.dsp.Game):
     # fungsi selama game berjalan
     def event_step(self, time_passed, delta_mult):
 
-        if invaders.menu == True:
+        if krakens.menu == True:
             self.show_main_menu()
-        elif invaders.menu == False:
+        elif krakens.menu == False:
             sge.game.mouse.visible = False
 
             # Jika kondisi terpenuhi maka tembakan pelurunya akan terupdate
@@ -206,12 +206,12 @@ class InvadersGame(sge.dsp.Game):
                     self.project_text(self.hud_font, "Got Upgrade!!", 5, 65,
                                       anti_alias=False)
 
-            num_invaders = sum(1 for o in
-                       self.current_room.objects if isinstance(o, objects.Invader))
+            num_krakens = sum(1 for o in
+                       self.current_room.objects if isinstance(o, objects.Kraken))
             self.show_hud()
 
             # Game akan selesai jika jumlah Kraken melebihi batas maksimal Kraken (dibatasi 100)
-            self.game_over = num_invaders >= MAX_NINV
+            self.game_over = num_krakens >= MAX_NKRAKEN
             if not self.game_over:
                 self.last_gen += time_passed
 
@@ -221,12 +221,12 @@ class InvadersGame(sge.dsp.Game):
 
             # Kondisi ketika jumlah Kraken saat ini dibawah batas minimal Kraken (batas min = 4)
             # Kita tidak bisa menunggu mereka sampai selesai berkembang biak
-            elif num_invaders <= MIN_NINV:
-                for inv in (o for o in self.current_room.objects
-                                                if isinstance(o, objects.Invader)):
-                    self.project_circle(inv.x+inv.bbox_width/2,
-                                        inv.y+inv.bbox_height/2,
-                                        inv.bbox_width, outline=IMMUNIT_COLOR,
+            elif num_krakens <= MIN_NKRAKENS:
+                for kraken_enemy in (o for o in self.current_room.objects
+                                                if isinstance(o, objects.Kraken)):
+                    self.project_circle(kraken_enemy.x+kraken_enemy.bbox_width/2,
+                                        kraken_enemy.y+kraken_enemy.bbox_height/2,
+                                        kraken_enemy.bbox_width, outline=IMMUNIT_COLOR,
                                         outline_thickness=2)
 
     #fungsi untuk menerima inputan keyboard dari user
@@ -267,9 +267,9 @@ class InvadersGame(sge.dsp.Game):
                                      CITIUS_COLOR, thickness=2)
 
             children_genes = evolution.recombinate([(i1, i2)],
-                                                 objects.Invader.gene_props)[0]
+                                                 objects.Kraken.gene_props)[0]
             # Menambah individu childeren_genes yang tadi dilakukan dari hasil perkawinan
-            desc = objects.Invader(**children_genes)
+            desc = objects.Kraken(**children_genes)
             desc.x, desc.y = (i1.x + i2.x)/2, (i1.y+i2.y)/2
             self.current_room.add(desc)
             # Perlambat penggambaran untuk meningkatkan animasi secara visual

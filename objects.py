@@ -7,7 +7,7 @@ pygame.init()
 pygame.mixer.init()
 
 # Shootsound
-SHOOT_SOUND = pygame.mixer.Sound('Assets/bullet.wav')
+SHOOT_SOUND = pygame.mixer.Sound('Assets/laser.wav')
 SHOOT_SOUND.set_volume(1)
 
 # destroy sound
@@ -26,7 +26,7 @@ UPGRADE_SOUND = pygame.mixer.Sound('Assets/upgrade.wav')
 UPGRADE_SOUND.set_volume(1)
 
 
-class Invader(sge.dsp.Object):
+class Kraken(sge.dsp.Object):
     gene_props = {
         'scale': {
             'min': 1,
@@ -59,10 +59,10 @@ class Invader(sge.dsp.Object):
     @staticmethod
     def _generate_gen(name):
         if name == 'colors':
-            return random.choice(Invader.gene_props[name])
-        v = Invader.gene_props[name]['gen']()
-        max_v = Invader.gene_props[name]['max']
-        min_v = Invader.gene_props[name]['min']
+            return random.choice(Kraken.gene_props[name])
+        v = Kraken.gene_props[name]['gen']()
+        max_v = Kraken.gene_props[name]['max']
+        min_v = Kraken.gene_props[name]['min']
         if v < min_v:
             return min_v
         elif v > max_v:
@@ -80,7 +80,7 @@ class Invader(sge.dsp.Object):
         self.genes = self.attributes
 
         # Asset musuh
-        super(Invader, self).__init__(sge.game.width / 2., sge.game.height / 2. - 80,
+        super(Kraken, self).__init__(sge.game.width / 2., sge.game.height / 2. - 80,
                                       sprite=sge.gfx.Sprite(name='E_kraken'),
                                       checks_collisions=False)
 
@@ -121,7 +121,7 @@ class Invader(sge.dsp.Object):
             self.yvelocity = -abs(self.yvelocity)
 
     def compare_fitness(self, other):
-        if not isinstance(other, Invader):
+        if not isinstance(other, Kraken):
             raise ValueError('Incomparable types')
         return self.fitness.__cmp__(other.fitness)
 
@@ -166,13 +166,13 @@ class Player(sge.dsp.Object):
     def event_key_press(self, key, char):
         # Shooting
         if not sge.game.game_over and key == 'space':
-            # The number of invaders must be higher than the minimum allowed,
+            # The number of krakens must be higher than the minimum allowed,
             # and the number of bullets lower than the maximum
-            ninvaders = sum(1 for o in sge.game.current_room.objects
-                            if isinstance(o, Invader))
+            nkrakens = sum(1 for o in sge.game.current_room.objects
+                            if isinstance(o, Kraken))
             nbullets = sum(1 for o in sge.game.current_room.objects
                            if isinstance(o, PlayerBullet))
-            if ninvaders > game.MIN_NINV and nbullets <= ninvaders / 10:
+            if nkrakens > game.MIN_NKRAKENS and nbullets <= nkrakens / 10:
                 # Play the shoot sound
                 self.shoot_sound.play()
 
@@ -207,22 +207,22 @@ class PlayerBullet(sge.dsp.Object):
 
         # The bullet appears out of the spaceplane
         if game.DOUBLE_SHOOT == False:
-            x = player.x + player.bbox_width / 2
+            x = player.x + player.bbox_width / 2 + 4
         elif game.TRIPLE_SHOOT == True:
             if player.double == True:
-                x = player.x + player.bbox_width
+                x = player.x + player.bbox_width - 2
                 if player.triple == True:
-                    x = player.x + player.bbox_width / 2
+                    x = player.x + player.bbox_width / 2 + 4
             else:
-                x = player.x
+                x = player.x + 10
         elif game.DOUBLE_SHOOT == True:
             if player.double == True:
-                x = player.x + player.bbox_width
+                x = player.x + player.bbox_width - 2
             else:
-                x = player.x
+                x = player.x + 10
         if game.LASER_SHOT == True:
-            x = player.x + player.bbox_width / 2 - 0.5
-        elif game.DOUBLE_LASER_SHOT == True:
+            x = player.x + player.bbox_width / 2 + 4
+        if game.DOUBLE_LASER_SHOT == True:
             if player.double_laser == True:
                 x = player.x + player.bbox_width - 2
             else:
@@ -235,11 +235,11 @@ class PlayerBullet(sge.dsp.Object):
         ball_sprite = sge.gfx.Sprite(width=self.bullet_size, height=10, origin_x=4, origin_y=4)
         if game.LASER_SHOT == True:
             ball_sprite.width = 1
-            ball_sprite.height = 500
+            ball_sprite.height = 100
             self.bullet_speed = 50
         if game.DOUBLE_LASER_SHOT == True:
             ball_sprite.width = 1
-            ball_sprite.height = 500
+            ball_sprite.height = 100
             self.bullet_speed = 50
         
         ball_sprite.draw_rectangle(0, 0, ball_sprite.width, ball_sprite.height,
@@ -255,7 +255,7 @@ class PlayerBullet(sge.dsp.Object):
             self.destroy()
         else:
             # Collision detection only for bullets
-            killed = self.collision(other=Invader)
+            killed = self.collision(other=Kraken)
 
             if killed:
                 killed[0].destroy()
@@ -310,6 +310,6 @@ class PlayerBullet(sge.dsp.Object):
                 self.killed = False
             elif game.SCORES == 160:
                 game.DOUBLE_LASER_SHOT = True
-                if self.killed == True:
+                if self.killed >= True:
                     self.upgrade_sound.play()
                 self.killed = False
