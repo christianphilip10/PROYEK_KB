@@ -124,10 +124,6 @@ class Kraken(sge.dsp.Object):
             self.bbox_bottom = game.RESY - (game.WALL_YOFFSET + game.WALL_HEIGHT)
             self.yvelocity = -abs(self.yvelocity)
 
-    def compare_fitness(self, other):
-        if not isinstance(other, Kraken):
-            raise ValueError('Incomparable types')
-        return self.fitness.__cmp__(other.fitness)
 
 
 class Player(sge.dsp.Object):
