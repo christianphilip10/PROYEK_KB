@@ -7,7 +7,7 @@ retry = False
 
 def run_game():
     if game.SCORES != 0:
-        game.SCORES =0
+        game.SCORES = 0
     # Create Game object
     if (retry == False):
         game.InvadersGame()

@@ -28,11 +28,13 @@ UPGRADE_SOUND.set_volume(1)
 
 class Kraken(sge.dsp.Object):
     gene_props = {
+        # Ukuran
         'scale': {
             'min': 1,
             'max': 7,
             'gen': lambda: random.gammavariate(4, 0.5) + 1
         },
+        # kecepatan
         'xvelocity': {
             'min': 0.01,
             'max': 5,
@@ -43,6 +45,7 @@ class Kraken(sge.dsp.Object):
             'max': 5,
             'gen': lambda: random.gammavariate(2, 0.3)
         },
+        # perpindahan arah
         'x_prob_change_dir': {
             'min': 0.01,
             'max': 0.06,
@@ -53,6 +56,7 @@ class Kraken(sge.dsp.Object):
             'max': 0.06,
             'gen': lambda: random.uniform(0.0, 0.05)
         },
+        # warna
         'colors': ['red', 'blue', 'green', 'yellow', 'pink', 'purple', 'violet']
     }
 
@@ -227,10 +231,6 @@ class PlayerBullet(sge.dsp.Object):
                 x = player.x + player.bbox_width - 2
             else:
                 x = player.x + 10
-        
- 
-                
-                
 
         ball_sprite = sge.gfx.Sprite(width=self.bullet_size, height=10, origin_x=4, origin_y=4)
         if game.LASER_SHOT == True:

@@ -33,7 +33,6 @@ def recombinate(pairs, gene_props, mutation_probability=0.1, effect=0.5):
         offspring.append(children_genes)
     return offspring
 
-
 # Fungsi ini juga digunakan untuk memilih pasangan individu untuk perkawinan, namun menggunakan metode turnamen.
 # Individu dipilih secara acak dan dibandingkan berdasarkan fitness mereka.
 def mating_pool_tournament(population, num_of_pairs=10, evaluator=attrgetter('fitness')):
