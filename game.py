@@ -153,23 +153,35 @@ class SpaceGame(sge.dsp.Game):
         # print(mouse)
         start_hover = False
         exit_hover = False
+        option_hover = False
         self.project_text(sge.gfx.Font('INVASION2000.ttf', size=70), 'Kraken Lore', RESX / 2, RESY / 2 - 140,
                           halign='center', valign='center')
 
         # Hover tombol di main menu
-        if 507 > mouse[0] > 452 and 312 > mouse[1] > 300:
+        if 505 > mouse[0] > 445 and 288 > mouse[1] > 270:
             color_start = gfx.Color("gray")
             start_hover = True
         else:
             color_start = gfx.Color("white")
-        if 496 > mouse[0] > 456 and 392 > mouse[1] > 370:
+        if 498 > mouse[0] > 450 and 348 > mouse[1] > 330:
             color_exit = gfx.Color("gray")
             exit_hover = True
         else:
             color_exit = gfx.Color("white")
 
-        self.project_text(self.hud_font, "Start", 445, 290, anti_alias=False, color=color_start)
-        self.project_text(self.hud_font, "Exit", 455, 365, anti_alias=False, color=color_exit)
+        if 629 > mouse[0] > 358 and 314 > mouse[1] > 300:
+            color_option = gfx.Color("gray")
+            option_hover = True
+        else:
+            color_option = gfx.Color("white")
+        if krakens.option == True:
+            option_text = "Show Enemy Spawn: ON"
+        else:
+            option_text = "Show Enemy Spawn: OFF"
+
+        self.project_text(self.hud_font, "Start", 445, 270, anti_alias=False, color=color_start)
+        self.project_text(self.hud_font, option_text, 358, 300, anti_alias=False, color=color_option)
+        self.project_text(self.hud_font, "Exit", 450, 330, anti_alias=False, color=color_exit)
 
         # Ketika tombol di main menu ditekan
         for event in pygame.event.get():
@@ -178,6 +190,11 @@ class SpaceGame(sge.dsp.Game):
                 krakens.run_game()
             elif event.type == pygame.MOUSEBUTTONUP and exit_hover:
                 self.end()
+            elif event.type == pygame.MOUSEBUTTONUP and option_hover:
+                if krakens.option == False:
+                    krakens.option = True
+                else:
+                    krakens.option = False
             start_hover = False
             exit_hover = False
 
@@ -289,6 +306,8 @@ class SpaceGame(sge.dsp.Game):
                 if self.matingSessionCount > 4:
                     self.anim_sleep = 0
             else:
+                if krakens.option == False:
+                    self.anim_sleep = 0
                 time.sleep(self.anim_sleep)
         # Jika tidak ada pairs
         elif self.pairs is not None:
@@ -318,8 +337,10 @@ class SpaceGame(sge.dsp.Game):
             else:
                 color_pause_continue = gfx.Color("white")
 
+
             self.project_text(self.hud_font, "Continue", 437, 340,
                               anti_alias=False, color=color_pause_continue)
+
             self.project_text(self.hud_font, "Exit", 467, 390,
                               anti_alias=False , color=color_pause_quit)
             #Ketika tombol di pause menu di tekan

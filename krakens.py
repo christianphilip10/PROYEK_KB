@@ -4,6 +4,7 @@ import objects
 
 menu = True
 retry = False
+option = True
 
 def run_game():
     if game.SCORES != 0:
